@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .title{
+            display: flex;
+            width: 500px;
+            line-height: 33px;
+            /* 把margin:50px去掉，不然每个盒子都有外边距，边框对不齐 */
+        }
+        .title h2{
+            font-size: 14px;
+            padding: 0;
+            padding-left: 10px; /* 放到后面，不会被覆盖 */
+            margin: 0;
+        }
+        .title a{
+            font-size: 12px;
+            color: #ccc;
+            text-decoration: none;
+            margin-right: 16px;
+        }
+        /* 第1个 */
+        .title:nth-child(1){
+            display:flex;
+            justify-content: space-between;
+            border: 1px solid #ccc;
+        }
+        /* 第2个 */
+        .title:nth-child(2){
+            display:flex;
+            border-left:1px solid #ccc;
+            border-right:1px solid #ccc;
+            border-top: none;
+        }
+        .title:nth-child(2) h2{
+            flex-grow: 1;
+        }
+        /* 第3个，这里补上. */
+        .title:nth-child(3){
+            position: relative;
+            border:1px solid #ccc;
+            border-top: none;
+        }
+        .title:nth-child(3) a{
+            position: absolute;
+            right: 10px;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 第1个 -->
+    <div class="title">
+        <h2>关斯译的标题1</h2>
+        <a href="#">更多</a>
+    </div>
+    <!-- 第2个 -->
+    <div class="title">
+        <h2>关斯译的标题2</h2>
+        <a href="#">更多</a>
+    </div>
+    <!-- 第3个 -->
+    <div class="title">
+        <h2>关斯译的标题3</h2>
+        <a href="#">更多</a>
+    </div>
+</body>
+</html>

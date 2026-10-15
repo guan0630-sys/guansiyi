@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web 前端长度单位</title>
+    <style>
+        :root {
+            --guan_ink: #182a3a;
+            --guan_paper: #f6f1e8;
+            --guan_cream: #fffdf8;
+            --guan_coral: #e66f51;
+            --guan_teal: #2d8c89;
+            --guan_yellow: #f3c969;
+            --guan_line: rgba(24, 42, 58, .14);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Georgia, "Microsoft YaHei", serif;
+            background: var(--guan_paper);
+            color: var(--guan_ink);
+            padding: 40px 20px;
+        }
+
+        .guan_container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .guan_header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .guan_header h1 {
+            font-size: clamp(32px, 5vw, 52px);
+            letter-spacing: -.03em;
+            margin-bottom: 12px;
+        }
+
+        .guan_header p {
+            color: #66798a;
+            font-size: 16px;
+        }
+
+        .guan_grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .guan_card {
+            background: var(--guan_cream);
+            border: 1px solid var(--guan_line);
+            border-radius: 12px;
+            padding: 28px;
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .guan_card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(24, 42, 58, .1);
+        }
+
+        .guan_card h2 {
+            font-size: 20px;
+            margin-bottom: 6px;
+            color: var(--guan_coral);
+        }
+
+        .guan_card .guan_unit-name {
+            font-family: "Courier New", monospace;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--guan_teal);
+            margin-bottom: 12px;
+        }
+
+        .guan_card .guan_desc {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #4a5c6c;
+            margin-bottom: 16px;
+        }
+
+        .guan_demo-box {
+            border: 1px dashed var(--guan_line);
+            border-radius: 8px;
+            padding: 16px;
+            background: rgba(243, 201, 105, .08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+        }
+
+        .guan_demo-label {
+            font-size: 12px;
+            color: #8a9aa8;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .guan_px-box { width: 100px; height: 60px; background: var(--guan_coral); border-radius: 6px; }
+        .guan_em-box { width: 10em; height: 3em; background: var(--guan_teal); border-radius: 6px; font-size: 16px; }
+        .guan_rem-box { width: 8rem; height: 3rem; background: var(--guan_yellow); border-radius: 6px; }
+        .guan_percent-box { width: 60%; height: 50px; background: #6d8fd3; border-radius: 6px; }
+        .guan_vw-box { width: 30vw; height: 50px; background: #d45d79; border-radius: 6px; }
+        .guan_vh-box { width: 120px; height: 15vh; background: #7f9d68; border-radius: 6px; }
+        .guan_vmin-box { width: 20vmin; height: 20vmin; background: #d19a45; border-radius: 6px; }
+        .guan_vmax-box { width: 15vmax; height: 40px; background: #8b76b8; border-radius: 6px; }
+        .guan_ch-box { width: 20ch; height: 50px; background: #4d9a9a; border-radius: 6px; }
+        .guan_cm-box { width: 5cm; height: 40px; background: #b67a58; border-radius: 6px; }
+        .guan_mm-box { width: 50mm; height: 40px; background: #c9855e; border-radius: 6px; }
+        .guan_in-box { width: 2in; height: 40px; background: #a06245; border-radius: 6px; }
+        .guan_pt-box { width: 144pt; height: 40px; background: #7d4e35; border-radius: 6px; }
+        .guan_pc-box { width: 12pc; height: 40px; background: #5e3a26; border-radius: 6px; }
+
+        .guan_footer {
+            text-align: center;
+            margin-top: 48px;
+            color: #8a9aa8;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="guan_container">
+        <header class="guan_header">
+            <h1>Web 前端长度单位</h1>
+            <p>CSS 中常用的长度单位一览 — 绝对单位与相对单位</p>
+        </header>
+
+        <div class="guan_grid">
+            <div class="guan_card">
+                <h2>像素</h2>
+                <div class="guan_unit-name">px</div>
+                <p class="guan_desc">最常用的绝对单位。1px 对应屏幕上的一个物理像素（在高 DPI 屏幕上可能对应多个物理像素）。适合边框、阴影等需要精确控制的场景。</p>
+                <div class="guan_demo-box"><div class="guan_px-box"></div></div>
+                <p class="guan_demo-label">width: 100px; height: 60px</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>相对父元素字体大小</h2>
+                <div class="guan_unit-name">em</div>
+                <p class="guan_desc">相对于当前元素的 font-size。如果当前元素 font-size 为 16px，则 1em = 16px。常用于 padding、margin 等需要与文字大小成比例的场景。</p>
+                <div class="guan_demo-box"><div class="guan_em-box"></div></div>
+                <p class="guan_demo-label">width: 10em; height: 3em（font-size: 16px）</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>相对根元素字体大小</h2>
+                <div class="guan_unit-name">rem</div>
+                <p class="guan_desc">相对于根元素（html）的 font-size，默认 16px。与 em 不同，rem 不受嵌套影响，更适合响应式布局和统一间距系统。</p>
+                <div class="guan_demo-box"><div class="guan_rem-box"></div></div>
+                <p class="guan_demo-label">width: 8rem; height: 3rem</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>百分比</h2>
+                <div class="guan_unit-name">%</div>
+                <p class="guan_desc">相对于父元素的对应属性值。宽度百分比相对于父元素宽度，高度百分比相对于父元素高度。是实现流式布局的核心单位。</p>
+                <div class="guan_demo-box"><div class="guan_percent-box"></div></div>
+                <p class="guan_demo-label">width: 60%; height: 50px</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>视口宽度</h2>
+                <div class="guan_unit-name">vw</div>
+                <p class="guan_desc">1vw = 视口宽度的 1%。视口指浏览器窗口的可见区域。常用于全屏布局、大标题字体等需要与屏幕宽度联动的场景。</p>
+                <div class="guan_demo-box"><div class="guan_vw-box"></div></div>
+                <p class="guan_demo-label">width: 30vw; height: 50px</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>视口高度</h2>
+                <div class="guan_unit-name">vh</div>
+                <p class="guan_desc">1vh = 视口高度的 1%。常用于需要占满屏幕一屏的场景，如 100vh 实现全屏 Banner。</p>
+                <div class="guan_demo-box"><div class="guan_vh-box"></div></div>
+                <p class="guan_demo-label">width: 120px; height: 15vh</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>视口较小值</h2>
+                <div class="guan_unit-name">vmin</div>
+                <p class="guan_desc">1vmin = vw 和 vh 中较小值的 1%。在横竖屏切换时能保持元素比例稳定，适合正方形元素和响应式图标。</p>
+                <div class="guan_demo-box"><div class="guan_vmin-box"></div></div>
+                <p class="guan_demo-label">width: 20vmin; height: 20vmin</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>视口较大值</h2>
+                <div class="guan_unit-name">vmax</div>
+                <p class="guan_desc">1vmax = vw 和 vh 中较大值的 1%。与 vmin 配合使用，可以创建更灵活的响应式布局方案。</p>
+                <div class="guan_demo-box"><div class="guan_vmax-box"></div></div>
+                <p class="guan_demo-label">width: 15vmax; height: 40px</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>字符宽度</h2>
+                <div class="guan_unit-name">ch</div>
+                <p class="guan_desc">1ch 等于当前字体中 "0" 字符的宽度。常用于限制文本容器宽度，如设置 max-width: 60ch 提升可读性。</p>
+                <div class="guan_demo-box"><div class="guan_ch-box"></div></div>
+                <p class="guan_demo-label">width: 20ch; height: 50px</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>厘米</h2>
+                <div class="guan_unit-name">cm</div>
+                <p class="guan_desc">物理长度单位，1cm = 37.8px ≈ 96dpi 下的 1 厘米。主要用于打印样式表（@media print），屏幕显示时精度有限。</p>
+                <div class="guan_demo-box"><div class="guan_cm-box"></div></div>
+                <p class="guan_demo-label">width: 5cm; height: 40px</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>毫米</h2>
+                <div class="guan_unit-name">mm</div>
+                <p class="guan_desc">1mm = 1/10 cm。与 cm 一样属于物理单位，主要用于打印排版场景。</p>
+                <div class="guan_demo-box"><div class="guan_mm-box"></div></div>
+                <p class="guan_demo-label">width: 50mm; height: 40px</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>英寸</h2>
+                <div class="guan_unit-name">in</div>
+                <p class="guan_desc">1in = 2.54cm = 96px。CSS 中定义的绝对物理单位，屏幕显示时按 96dpi 换算，打印时按实际英寸输出。</p>
+                <div class="guan_demo-box"><div class="guan_in-box"></div></div>
+                <p class="guan_demo-label">width: 2in; height: 40px</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>点</h2>
+                <div class="guan_unit-name">pt</div>
+                <p class="guan_desc">1pt = 1/72 in ≈ 1.333px。源自印刷行业，在 CSS 中主要用于打印样式或需要与 Word 文档字号对应的场景。</p>
+                <div class="guan_demo-box"><div class="guan_pt-box"></div></div>
+                <p class="guan_demo-label">width: 144pt; height: 40px</p>
+            </div>
+
+            <div class="guan_card">
+                <h2>派卡</h2>
+                <div class="guan_unit-name">pc</div>
+                <p class="guan_desc">1pc = 12pt = 1/6 in。印刷行业单位，在 Web 开发中极少使用，主要用于打印样式表。</p>
+                <div class="guan_demo-box"><div class="guan_pc-box"></div></div>
+                <p class="guan_demo-label">width: 12pc; height: 40px</p>
+            </div>
+        </div>
+
+        <footer class="guan_footer">
+            <p>Web 前端长度单位 · 高级网页设计课程</p>
+        </footer>
+    </div>
+</body>
+</html>

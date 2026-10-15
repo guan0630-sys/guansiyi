@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS3 3D 动画</title>
+    <style>
+        :root {
+            --guan_ink: #182a3a;
+            --guan_paper: #0f1923;
+            --guan_coral: #e66f51;
+            --guan_teal: #2d8c89;
+            --guan_yellow: #f3c969;
+            --guan_purple: #8b76b8;
+            --guan_blue: #6d8fd3;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Georgia, "Microsoft YaHei", serif;
+            background: var(--guan_paper);
+            color: #e6eee9;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 40px 20px;
+        }
+
+        .guan_container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .guan_header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .guan_header h1 {
+            font-size: clamp(32px, 5vw, 52px);
+            letter-spacing: -.03em;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--guan_coral), var(--guan_yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .guan_header p {
+            color: #8a9aa8;
+            font-size: 16px;
+        }
+
+        .guan_section {
+            margin-bottom: 64px;
+        }
+
+        .guan_section-title {
+            font-size: 22px;
+            color: var(--guan_yellow);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(243, 201, 105, .2);
+        }
+
+        .guan_grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .guan_card {
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            perspective: 800px;
+        }
+
+        .guan_card h3 {
+            font-size: 16px;
+            color: #b0c4d0;
+            margin-bottom: 24px;
+            font-weight: normal;
+        }
+
+        .guan_card p {
+            font-size: 13px;
+            color: #6a7a88;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        .guan_cube-wrapper {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            perspective: 600px;
+        }
+
+        .guan_cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: guan_spin 6s linear infinite;
+        }
+
+        .guan_cube-face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(255, 255, 255, .3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            backface-visibility: visible;
+        }
+
+        .guan_cube-face:nth-child(1) { background: rgba(230, 111, 81, .7); transform: rotateY(0deg) translateZ(50px); }
+        .guan_cube-face:nth-child(2) { background: rgba(45, 140, 137, .7); transform: rotateY(90deg) translateZ(50px); }
+        .guan_cube-face:nth-child(3) { background: rgba(243, 201, 105, .7); transform: rotateY(180deg) translateZ(50px); }
+        .guan_cube-face:nth-child(4) { background: rgba(139, 118, 184, .7); transform: rotateY(-90deg) translateZ(50px); }
+        .guan_cube-face:nth-child(5) { background: rgba(109, 143, 211, .7); transform: rotateX(90deg) translateZ(50px); }
+        .guan_cube-face:nth-child(6) { background: rgba(212, 93, 121, .7); transform: rotateX(-90deg) translateZ(50px); }
+
+        @keyframes guan_spin {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        .guan_flip-card {
+            width: 120px;
+            height: 160px;
+            margin: 0 auto;
+            perspective: 800px;
+            cursor: pointer;
+        }
+
+        .guan_flip-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform .8s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .guan_flip-card:hover .guan_flip-inner {
+            transform: rotateY(180deg);
+        }
+
+        .guan_flip-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            backface-visibility: hidden;
+        }
+
+        .guan_flip-front {
+            background: linear-gradient(135deg, var(--guan_coral), #d45d79);
+            color: #fff;
+        }
+
+        .guan_flip-back {
+            background: linear-gradient(135deg, var(--guan_teal), #4d9a9a);
+            color: #fff;
+            transform: rotateY(180deg);
+        }
+
+        .guan_card3d {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, var(--guan_purple), var(--guan_blue));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+            transform-style: preserve-3d;
+            animation: guan_float3d 4s ease-in-out infinite;
+            box-shadow: 0 20px 40px rgba(139, 118, 184, .3);
+        }
+
+        @keyframes guan_float3d {
+            0%, 100% { transform: rotateX(15deg) rotateY(-15deg) translateZ(0); }
+            50% { transform: rotateX(-15deg) rotateY(15deg) translateZ(30px); }
+        }
+
+        .guan_ring-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            perspective: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .guan_ring {
+            width: 100px;
+            height: 100px;
+            border: 4px solid transparent;
+            border-top-color: var(--guan_coral);
+            border-right-color: var(--guan_yellow);
+            border-radius: 50%;
+            animation: guan_ring-spin 2s linear infinite;
+            transform: rotateX(60deg);
+        }
+
+        @keyframes guan_ring-spin {
+            from { transform: rotateX(60deg) rotateZ(0deg); }
+            to { transform: rotateX(60deg) rotateZ(360deg); }
+        }
+
+        .guan_pyramid-wrapper {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            perspective: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .guan_pyramid {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 87px solid var(--guan_teal);
+            transform-style: preserve-3d;
+            animation: guan_pyramid-spin 5s linear infinite;
+            position: relative;
+        }
+
+        @keyframes guan_pyramid-spin {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .guan_carousel-wrapper {
+            width: 100px;
+            height: 140px;
+            margin: 0 auto;
+            perspective: 800px;
+        }
+
+        .guan_carousel {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: guan_carousel-rotate 8s linear infinite;
+        }
+
+        .guan_carousel-item {
+            position: absolute;
+            width: 100px;
+            height: 140px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, .2);
+        }
+
+        .guan_carousel-item:nth-child(1) { background: rgba(230, 111, 81, .8); transform: rotateY(0deg) translateZ(80px); }
+        .guan_carousel-item:nth-child(2) { background: rgba(45, 140, 137, .8); transform: rotateY(72deg) translateZ(80px); }
+        .guan_carousel-item:nth-child(3) { background: rgba(243, 201, 105, .8); transform: rotateY(144deg) translateZ(80px); }
+        .guan_carousel-item:nth-child(4) { background: rgba(139, 118, 184, .8); transform: rotateY(216deg) translateZ(80px); }
+        .guan_carousel-item:nth-child(5) { background: rgba(109, 143, 211, .8); transform: rotateY(288deg) translateZ(80px); }
+
+        @keyframes guan_carousel-rotate {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .guan_pendulum-wrapper {
+            width: 120px;
+            height: 140px;
+            margin: 0 auto;
+            perspective: 600px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .guan_pendulum {
+            width: 4px;
+            height: 100px;
+            background: rgba(255, 255, 255, .3);
+            position: relative;
+            transform-origin: top center;
+            animation: guan_pendulum-swing 2s ease-in-out infinite;
+        }
+
+        .guan_pendulum::after {
+            content: "";
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 36px;
+            height: 36px;
+            background: radial-gradient(circle at 35% 35%, var(--guan_yellow), var(--guan_coral));
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(230, 111, 81, .4);
+        }
+
+        @keyframes guan_pendulum-swing {
+            0%, 100% { transform: rotate(25deg); }
+            50% { transform: rotate(-25deg); }
+        }
+
+        .guan_footer {
+            text-align: center;
+            margin-top: 64px;
+            color: #5a6a78;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="guan_container">
+        <header class="guan_header">
+            <h1>CSS3 3D 动画</h1>
+            <p>使用 transform-style: preserve-3d 与 perspective 创造三维空间动画</p>
+        </header>
+
+        <section class="guan_section">
+            <h2 class="guan_section-title">基础 3D 变换</h2>
+            <div class="guan_grid">
+                <div class="guan_card">
+                    <h3>3D 旋转立方体</h3>
+                    <div class="guan_cube-wrapper">
+                        <div class="guan_cube">
+                            <div class="guan_cube-face">前</div>
+                            <div class="guan_cube-face">右</div>
+                            <div class="guan_cube-face">后</div>
+                            <div class="guan_cube-face">左</div>
+                            <div class="guan_cube-face">上</div>
+                            <div class="guan_cube-face">下</div>
+                        </div>
+                    </div>
+                    <p>rotateX + rotateY 组合旋转</p>
+                </div>
+
+                <div class="guan_card">
+                    <h3>3D 翻转卡片</h3>
+                    <div class="guan_flip-card">
+                        <div class="guan_flip-inner">
+                            <div class="guan_flip-face guan_flip-front">正面</div>
+                            <div class="guan_flip-face guan_flip-back">背面</div>
+                        </div>
+                    </div>
+                    <p>hover 触发 rotateY(180deg)</p>
+                </div>
+
+                <div class="guan_card">
+                    <h3>3D 悬浮卡片</h3>
+                    <div class="guan_card3d">3D 悬浮</div>
+                    <p>rotateX + rotateY + translateZ</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="guan_section">
+            <h2 class="guan_section-title">进阶 3D 动画</h2>
+            <div class="guan_grid">
+                <div class="guan_card">
+                    <h3>3D 旋转圆环</h3>
+                    <div class="guan_ring-container">
+                        <div class="guan_ring"></div>
+                    </div>
+                    <p>rotateX 倾斜 + rotateZ 旋转</p>
+                </div>
+
+                <div class="guan_card">
+                    <h3>3D 旋转木马</h3>
+                    <div class="guan_carousel-wrapper">
+                        <div class="guan_carousel">
+                            <div class="guan_carousel-item">1</div>
+                            <div class="guan_carousel-item">2</div>
+                            <div class="guan_carousel-item">3</div>
+                            <div class="guan_carousel-item">4</div>
+                            <div class="guan_carousel-item">5</div>
+                        </div>
+                    </div>
+                    <p>多元素 rotateY + translateZ 围成圆形</p>
+                </div>
+
+                <div class="guan_card">
+                    <h3>3D 单摆</h3>
+                    <div class="guan_pendulum-wrapper">
+                        <div class="guan_pendulum"></div>
+                    </div>
+                    <p>transform-origin 顶部摆动</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="guan_footer">
+            <p>CSS3 3D 动画 · 高级网页设计课程</p>
+        </footer>
+    </div>
+</body>
+</html>

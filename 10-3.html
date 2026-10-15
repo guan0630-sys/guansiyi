@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>媒体查询改变背景颜色</title>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+		}
+
+		.box {
+			width: 100%;
+			min-height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-color: #2a9d8f;
+			color: #fff;
+			font-family: "Microsoft YaHei", sans-serif;
+			font-size: 3rem;
+			font-weight: bold;
+			transition: background-color 0.3s ease;
+		}
+
+		@media (max-width: 900px) {
+			.box {
+				background-color: #e9c46a;
+				color: #222;
+				font-size: 2.5rem;
+			}
+		}
+
+		@media (max-width: 600px) {
+			.box {
+				background-color: #e76f51;
+				color: #fff;
+				font-size: 2rem;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main class="box">关斯译</main>
+</body>
+</html>

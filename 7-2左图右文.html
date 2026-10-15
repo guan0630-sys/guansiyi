@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        .box{}
+        .zitem{
+            display: flex;
+            padding: 10px 5px;
+            margin-bottom: 5px;
+            border-bottom: 1px dotted #ccc;
+        }
+        .zitem img{
+            width: 100px;
+        }
+        .ytext{
+            flex-grow: 1;
+            margin-left: 10px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .ytext h3{
+            width: 100%;
+            font-size: 16px;
+            line-height: 40px;
+            color: #333;
+        }
+        .author{
+            font-size: 12px;
+            color: #aaa;
+            flex-grow: 1;
+            padding-left: 19px;
+        }
+        .time{
+            font-size: 12px;
+            color: #aaa;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <!-- 第1项 -->
+        <div class="zitem">
+            <img src="./1.jpg">
+            <div class="ytext">
+                <h3>标题</h3>
+                <div class="author">关斯译</div>
+                <div class="time">时间：2020-10-10</div>
+            </div>
+        </div>
+        <!-- 第2项 -->
+        <div class="zitem">
+            <img src="./2.jpg">
+            <div class="ytext">
+                <h3>标题</h3>
+                <div class="author">关斯译</div>
+                <div class="time">时间：2020-10-10</div>
+            </div>
+        </div>
+        <!-- 第3项 -->
+        <div class="zitem">
+            <img src="./3.jpg">
+            <div class="ytext">
+                <h3>标题</h3>
+                <div class="author">关斯译</div>
+                <div class="time">时间：2020-10-10</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

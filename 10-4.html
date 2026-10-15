@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>媒体查询响应式布局</title>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			min-width: 320px;
+			min-height: 100vh;
+			margin: 0;
+			padding: 48px 24px;
+			background-color: #f4f5f2;
+			color: #202a29;
+			font-family: "Microsoft YaHei", sans-serif;
+		}
+
+		main {
+			width: min(100%, 1100px);
+			margin: 0 auto;
+		}
+
+		h1 {
+			margin: 0 0 28px;
+			font-size: 2rem;
+		}
+
+		.box-grid {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			gap: 16px;
+		}
+
+		.box {
+			min-height: 150px;
+			display: grid;
+			place-items: center;
+			border-radius: 6px;
+			background-color: #2a9d8f;
+			color: #fff;
+			font-size: 1.5rem;
+			font-weight: bold;
+		}
+
+		.box:nth-child(even) {
+			background-color: #e76f51;
+		}
+
+		@media (max-width: 900px) {
+			.box-grid {
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+			}
+		}
+
+		@media (max-width: 600px) {
+			body {
+				padding: 32px 16px;
+			}
+
+			.box-grid {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 12px;
+			}
+
+			.box {
+				min-height: 120px;
+			}
+		}
+
+		@media (max-width: 380px) {
+			.box-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main>
+		<h1>关斯译</h1>
+		<div class="box-grid">
+			<div class="box">盒子 1</div>
+			<div class="box">盒子 2</div>
+			<div class="box">盒子 3</div>
+			<div class="box">盒子 4</div>
+			<div class="box">盒子 5</div>
+			<div class="box">盒子 6</div>
+			<div class="box">盒子 7</div>
+			<div class="box">盒子 8</div>
+		</div>
+	</main>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>CSS Animation 背景颜色变化</title>
+	<style>
+		body {
+			min-height: 100vh;
+			margin: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-color: #f4f4f4;
+		}
+
+		.box {
+			width: 200px;
+			height: 200px;
+			animation: color-change 8s infinite;
+		}
+
+		@keyframes color-change {
+			0% {
+				background-color: #e74c3c;
+				width: 200px;
+				height: 200px;
+			}
+			25% {
+				background-color: #f1c40f;
+				width: 280px;
+				height: 160px;
+			}
+			50% {
+				background-color: #2ecc71;
+				width: 160px;
+				height: 280px;
+			}
+			75% {
+				background-color: #3498db;
+				width: 300px;
+				height: 120px;
+			}
+			100% {
+				background-color: #e74c3c;
+				width: 200px;
+				height: 200px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="box"></div>
+</body>
+</html>

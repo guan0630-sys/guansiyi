@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .flex{
+            /*容器*/
+            display: flex;
+            /*子元素在一行显示*/
+        flex-wrap: wrap;
+        }
+        .flex li{
+            /*项目*/
+            /*float:left;*/
+            border: 1px solid #333;
+            width: 49%;
+            height: 100px;
+            line-height: 100px;
+            list-style: none;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            /*色块与容器边框之间的留白*/
+            padding: 10px;
+            /*块与块之间的间隙*/
+            gap: 20px;
+        }
+        .flex li:nth-child(1){
+           align-items: center;
+           /*水平居中*/
+              justify-content: center;
+        }
+        .box{
+            width: calc(50% - 10px);
+            height: calc(50% - 10px);
+            background-color: #f1f2f3;
+            border: 1px solid #333;
+        }
+        .flex li:nth-child(2){
+            /*上下排列*/
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .flex li:nth-child(3){
+            /*2行2列*/
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-content: space-between;
+        }
+        .flex li:nth-child(4){
+            /*上横下两竖*/
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-content: space-between;
+        }
+        .flex li:nth-child(4) .box:nth-child(1){
+            /*上方的长条占满整行*/
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h2>关斯译 flex</h2>
+    <ul class="flex">
+        <li>
+            <div class="box"></div>
+        </li>
+        <li>
+            <div class="box"></div>
+            <div class="box"></div>
+        </li>
+        <li>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+        </li>
+        <li>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+        </li>
+    </ul>
+</body>
+</html>
