@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucide SVG 图标</title>
+    <!--
+        姓名：关斯译
+        日期：2026-10-22
+        功能名称：使用 SVG 方式（Lucide）展示图标，资源本地放在 cdn 目录
+    -->
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+        .guan_wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            padding: 30px 40px;
+        }
+        .guan_title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .guan_subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+        .guan_grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 16px;
+        }
+        .guan_item {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px 10px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .guan_item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+        }
+        .guan_icon {
+            width: 34px;
+            height: 34px;
+            stroke: #3498db;
+            stroke-width: 2;
+            margin: 0 auto 10px;
+            display: block;
+        }
+        .guan_label {
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+        .guan_note {
+            background: #eaf2fb;
+            border-left: 4px solid #3498db;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="guan_wrapper">
+        <h1 class="guan_title">Lucide SVG 图标</h1>
+        <p class="guan_subtitle">使用 SVG 方式：通过 Lucide 把图标渲染为内联 SVG 图形</p>
+
+        <div class="guan_note">
+            通过 <code>&lt;script src="cdn/lucide/lucide.min.js"&gt;&lt;/script&gt;</code> 本地引用，
+            使用 <code>&lt;i data-lucide="图标名"&gt;&lt;/i&gt;</code> 标记，再执行 <code>lucide.createIcons()</code> 生成内联 SVG。
+        </div>
+
+        <div class="guan_grid">
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="home"></i>
+                <div class="guan_label">home</div>
+            </div>
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="user"></i>
+            <div class="guan_label">user</div>
+            </div>
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="star"></i>
+            <div class="guan_label">star</div>
+            </div>
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="heart"></i>
+            <div class="guan_label">heart</div>
+            </div>
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="camera"></i>
+            <div class="guan_label">camera</div>
+            </div>
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="settings"></i>
+            <div class="guan_label">settings</div>
+            </div>
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="cloud"></i>
+            <div class="guan_label">cloud</div>
+            </div>
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="music-2"></i>
+            <div class="guan_label">music-2</div>
+            </div>
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="mail"></i>
+            <div class="guan_label">mail</div>
+            </div>
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="phone"></i>
+            <div class="guan_label">phone</div>
+            </div>
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="twitter"></i>
+            <div class="guan_label">twitter</div>
+            </div>
+            <div class="guan_item">
+                <i class="guan_icon" data-lucide="github"></i>
+            <div class="guan_label">github</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="cdn/lucide/lucide.min.js"></script>
+    <script>
+        // 将带 data-lucide 的元素创建为内联 SVG 图标
+        lucide.createIcons();
+    </script>
+</body>
+</html>

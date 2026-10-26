@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="四级项目 图像解决方案：内联 SVG 符号实现网易云音乐下导航，自适应宽度且固定底部">
+    <title>4-2 SVG下导航 · 网易云音乐</title>
+    <!--
+        姓名：关斯译
+        学号：24001010318
+        班级：计算机24003班
+        日期：2026-10-25
+        功能名称：四级项目 —— 图像解决方案（方案二：SVG）。
+                  与方案一的字体图标技术不同，这里把同一套图标轮廓用内联 <symbol> + <use>
+                  的方式引入，图标为真正的矢量图形，通过 fill: currentColor 由 CSS 控制颜色，
+                  并用 position: fixed 让下导航固定在视口底部，导航项 flex: 1 1 0 自适应宽度。
+    -->
+    <style>
+        /* ==================== 全局公共样式 ==================== */
+        :root {
+            --guan_red: #c20c0c;
+            --guan_dark: #242424;
+            --guan_text: #333;
+            --guan_sub: #8a8a8a;
+            --guan_line: #e1e1e1;
+            --guan_bg: #f5f5f5;
+            --guan_panel: #ffffff;
+            --guan_tabbar_h: 54px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            color: var(--guan_text);
+            background: var(--guan_bg);
+            font: 14px/1.7 Arial, "Microsoft YaHei", sans-serif;
+            /* 给底部固定导航让出空间，避免最后一段内容被遮住 */
+            padding-bottom: calc(var(--guan_tabbar_h) + 20px);
+        }
+
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            border: 0;
+        }
+
+        /* 图标精灵（symbol 定义区）不占布局，只作为图形仓库 */
+        .guan_sprite {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+
+        /* ==================== 页面骨架 ==================== */
+        .guan_header {
+            color: #ccc;
+            background: var(--guan_dark);
+        }
+
+        .guan_header_inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 52px;
+        }
+
+        .guan_logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .guan_logo_svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--guan_red);
+        }
+
+        .guan_nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .guan_nav_link {
+            padding: 5px 12px;
+            border-radius: 4px;
+            color: #bdbdbd;
+            font-size: 13px;
+        }
+
+        .guan_nav_link:hover {
+            color: #fff;
+            background: #333;
+        }
+
+        .guan_nav_link--on {
+            color: #fff;
+            background: var(--guan_red);
+        }
+
+        .guan_page {
+            max-width: 960px;
+            margin: 26px auto 40px;
+            padding: 0 20px;
+        }
+
+        .guan_tip {
+            margin-bottom: 18px;
+            padding: 10px 14px;
+            border-left: 3px solid var(--guan_red);
+            color: var(--guan_sub);
+            background: #fff;
+            font-size: 13px;
+        }
+
+        .guan_tip b {
+            color: var(--guan_text);
+        }
+
+        .guan_block {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--guan_panel);
+            border: 1px solid var(--guan_line);
+        }
+
+        .guan_block_title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            font-size: 16px;
+            font-weight: normal;
+        }
+
+        .guan_block_title::before {
+            content: "";
+            width: 4px;
+            height: 15px;
+            background: var(--guan_red);
+        }
+
+        .guan_block_desc {
+            margin-bottom: 14px;
+            color: var(--guan_sub);
+            font-size: 13px;
+        }
+
+        /* ==================== 内容区（用于验证固定效果） ==================== */
+        .guan_demo_head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--guan_line);
+            font-size: 15px;
+        }
+
+        .guan_demo_head_svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--guan_red);
+        }
+
+        .guan_demo_head span {
+            margin-left: auto;
+            color: var(--guan_sub);
+            font-size: 12px;
+        }
+
+        .guan_cardlist {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px 14px;
+            margin-top: 14px;
+        }
+
+        .guan_card_cover {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .guan_card_name {
+            margin-top: 6px;
+            font-size: 12px;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        .guan_card_meta {
+            margin-top: 2px;
+            color: var(--guan_sub);
+            font-size: 11px;
+        }
+
+        /* ==================== 下导航（SVG 方案 · 固定底部） ==================== */
+        .guan_tabbar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            height: var(--guan_tabbar_h);
+            /* iPhone 等刘海屏底部安全区，浏览器不支持时自动忽略 */
+            padding-bottom: env(safe-area-inset-bottom);
+            border-top: 1px solid var(--guan_line);
+            background: rgba(251, 251, 251, 0.96);
+            box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.06);
+        }
+
+        .guan_tab {
+            /* 与方案一相同的自适应策略：flex-basis 为 0，5 项严格均分 */
+            flex: 1 1 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: var(--guan_sub);
+            font-size: 11px;
+            line-height: 1.2;
+        }
+
+        .guan_tab_svg {
+            /* 图标的尺寸由 CSS 的 width/height 控制 */
+            width: 24px;
+            height: 24px;
+            /* 关键：填充色跟随文字颜色，一份 SVG 可任意换色 */
+            fill: currentColor;
+            /* 选中时可以微调缩放，这里只做静态展示，不加过渡 */
+            transform: scale(1);
+        }
+
+        .guan_tab_txt {
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .guan_tab--on {
+            color: var(--guan_red);
+        }
+
+        .guan_tab--on .guan_tab_svg {
+            transform: scale(1.08);
+        }
+
+        /* ==================== 技术对照表 ==================== */
+        /* 窄屏下三列文字会被压扁，用滚动容器保证可读性 */
+        .guan_table_wrap {
+            margin-top: 12px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .guan_table {
+            width: 100%;
+            min-width: 620px;
+            margin-top: 0;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .guan_table th,
+        .guan_table td {
+            padding: 8px 10px;
+            border: 1px solid var(--guan_line);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .guan_table th {
+            color: #fff;
+            background: #4a4a4a;
+            font-weight: normal;
+        }
+
+        .guan_table tr:nth-child(even) td {
+            background: #fafafa;
+        }
+
+        .guan_table code {
+            padding: 1px 4px;
+            border-radius: 3px;
+            color: var(--guan_red);
+            background: #f6f6f6;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+
+        /* ==================== 要点说明 ==================== */
+        .guan_points {
+            margin-top: 6px;
+            padding-left: 18px;
+            color: #555;
+            font-size: 13px;
+            list-style: disc;
+        }
+
+        .guan_points li {
+            margin-top: 6px;
+        }
+
+        .guan_points code {
+            padding: 1px 4px;
+            border-radius: 3px;
+            color: var(--guan_red);
+            background: #f6f6f6;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 780px) {
+            .guan_page {
+                padding: 0 12px;
+            }
+
+            .guan_block {
+                padding: 14px;
+            }
+
+            .guan_cardlist {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .guan_table {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 图标精灵：一次性定义所有矢量图形，页面其他地方用 <use> 复用 -->
+    <svg class="guan_sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="guan_sym_music" viewBox="0 0 100 100">
+            <path d="M41 74 C41 78.97 35.63 83 29 83 C22.37 83 17 78.97 17 74 C17 69.03 22.37 65 29 65 C35.63 65 41 69.03 41 74 Z M77 64 C77 68.97 71.63 73 65 73 C58.37 73 53 68.97 53 64 C53 59.03 58.37 55 65 55 C71.63 55 77 59.03 77 64 Z M38 22 L41.5 22 C42.05 22 42.5 22.45 42.5 23 L42.5 74 C42.5 74.55 42.05 75 41.5 75 L38 75 C37.45 75 37 74.55 37 74 L37 23 C37 22.45 37.45 22 38 22 Z M74 12 L77.5 12 C78.05 12 78.5 12.45 78.5 13 L78.5 64 C78.5 64.55 78.05 65 77.5 65 L74 65 C73.45 65 73 64.55 73 64 L73 13 C73 12.45 73.45 12 74 12 Z M37 22 L78.5 12 L78.5 26 L37 36 Z"/>
+        </symbol>
+        <symbol id="guan_sym_play" viewBox="0 0 100 100">
+            <path d="M92 50 C92 73.2 73.2 92 50 92 C26.8 92 8 73.2 8 50 C8 26.8 26.8 8 50 8 C73.2 8 92 26.8 92 50 Z M38 29 L38 71 L77 50 L38 29 Z"/>
+        </symbol>
+        <symbol id="guan_sym_search" viewBox="0 0 100 100">
+            <path d="M75 42 C75 60.23 60.23 75 42 75 C23.77 75 9 60.23 9 42 C9 23.77 23.77 9 42 9 C60.23 9 75 23.77 75 42 Z M65 42 C65 29.3 54.7 19 42 19 C29.3 19 19 29.3 19 42 C19 54.7 29.3 65 42 65 C54.7 65 65 54.7 65 42 Z M55.47 64.53 L64.53 55.47 L83.53 74.47 L74.47 83.53 L55.47 64.53 Z M66.4 60 C66.4 63.53 63.53 66.4 60 66.4 C56.47 66.4 53.6 63.53 53.6 60 C53.6 56.47 56.47 53.6 60 53.6 C63.53 53.6 66.4 56.47 66.4 60 Z M85.4 79 C85.4 82.53 82.53 85.4 79 85.4 C75.47 85.4 72.6 82.53 72.6 79 C72.6 75.47 75.47 72.6 79 72.6 C82.53 72.6 85.4 75.47 85.4 79 Z"/>
+        </symbol>
+        <symbol id="guan_sym_home" viewBox="0 0 100 100">
+            <path d="M50 6 L96 54 L4 54 Z M20 44 L80 44 C82.21 44 84 45.79 84 48 L84 86 C84 88.21 82.21 90 80 90 L20 90 C17.79 90 16 88.21 16 86 L16 48 C16 45.79 17.79 44 20 44 Z M42 64 L42 90 L58 90 L58 64 L42 64 Z"/>
+        </symbol>
+        <symbol id="guan_sym_compass" viewBox="0 0 100 100">
+            <path d="M92 50 C92 73.2 73.2 92 50 92 C26.8 92 8 73.2 8 50 C8 26.8 26.8 8 50 8 C73.2 8 92 26.8 92 50 Z M84 50 C84 31.22 68.78 16 50 16 C31.22 16 16 31.22 16 50 C16 68.78 31.22 84 50 84 C68.78 84 84 68.78 84 50 Z M50 18 L64 50 L50 82 L36 50 Z"/>
+        </symbol>
+        <symbol id="guan_sym_mic" viewBox="0 0 100 100">
+            <path d="M50 8 L50 8 C56.63 8 62 13.37 62 20 L62 42 C62 48.63 56.63 54 50 54 L50 54 C43.37 54 38 48.63 38 42 L38 20 C38 13.37 43.37 8 50 8 Z M77 46 L76.83 49.02 L76.32 52.01 L75.48 54.92 L74.33 57.71 L72.86 60.36 L71.11 62.83 L69.09 65.09 L66.83 67.11 L64.36 68.86 L61.71 70.33 L58.92 71.48 L56.01 72.32 L53.02 72.83 L50 73 L46.98 72.83 L43.99 72.32 L41.08 71.48 L38.29 70.33 L35.64 68.86 L33.17 67.11 L30.91 65.09 L28.89 62.83 L27.14 60.36 L25.67 57.71 L24.52 54.92 L23.68 52.01 L23.17 49.02 L23 46 L30 46 L30.13 48.24 L30.5 50.45 L31.12 52.61 L31.98 54.68 L33.07 56.64 L34.36 58.47 L35.86 60.14 L37.53 61.64 L39.36 62.93 L41.32 64.02 L43.39 64.88 L45.55 65.5 L47.76 65.87 L50 66 L52.24 65.87 L54.45 65.5 L56.61 64.88 L58.68 64.02 L60.64 62.93 L62.47 61.64 L64.14 60.14 L65.64 58.47 L66.93 56.64 L68.02 54.68 L68.88 52.61 L69.5 50.45 L69.87 48.24 L70 46 Z M47.5 72 L52.5 72 C53.05 72 53.5 72.45 53.5 73 L53.5 81 C53.5 81.55 53.05 82 52.5 82 L47.5 82 C46.95 82 46.5 81.55 46.5 81 L46.5 73 C46.5 72.45 46.95 72 47.5 72 Z M34 82 L66 82 C68.21 82 70 83.79 70 86 L70 86 C70 88.21 68.21 90 66 90 L34 90 C31.79 90 30 88.21 30 86 L30 86 C30 83.79 31.79 82 34 82 Z"/>
+        </symbol>
+        <symbol id="guan_sym_cloud" viewBox="0 0 100 100">
+            <path d="M28 48 L72 48 C73.1 48 74 48.9 74 50 L74 70 C74 71.1 73.1 72 72 72 L28 72 C26.9 72 26 71.1 26 70 L26 50 C26 48.9 26.9 48 28 48 Z M52 50 C52 58.84 44.84 66 36 66 C27.16 66 20 58.84 20 50 C20 41.16 27.16 34 36 34 C44.84 34 52 41.16 52 50 Z M77 42 C77 53.6 67.6 63 56 63 C44.4 63 35 53.6 35 42 C35 30.4 44.4 21 56 21 C67.6 21 77 30.4 77 42 Z M87 54 C87 61.18 81.18 67 74 67 C66.82 67 61 61.18 61 54 C61 46.82 66.82 41 74 41 C81.18 41 87 46.82 87 54 Z"/>
+        </symbol>
+        <symbol id="guan_sym_user" viewBox="0 0 100 100">
+            <path d="M68 29 C68 38.94 59.94 47 50 47 C40.06 47 32 38.94 32 29 C32 19.06 40.06 11 50 11 C59.94 11 68 19.06 68 29 Z M36 56 L64 56 C73.39 56 81 63.61 81 73 L81 73 C81 82.39 73.39 90 64 90 L36 90 C26.61 90 19 82.39 19 73 L19 73 C19 63.61 26.61 56 36 56 Z"/>
+        </symbol>
+        <symbol id="guan_sym_heart" viewBox="0 0 100 100">
+            <path d="M51 36 C51 45.94 42.94 54 33 54 C23.06 54 15 45.94 15 36 C15 26.06 23.06 18 33 18 C42.94 18 51 26.06 51 36 Z M85 36 C85 45.94 76.94 54 67 54 C57.06 54 49 45.94 49 36 C49 26.06 57.06 18 67 18 C76.94 18 85 26.06 85 36 Z M15 43 L85 43 L50 87 L15 43 Z"/>
+        </symbol>
+        <symbol id="guan_sym_download" viewBox="0 0 100 100">
+            <path d="M50 8 L75 36 L59 36 L59 62 L41 62 L41 36 L25 36 Z M14 66 L24 66 L24 82 L76 82 L76 66 L86 66 L86 92 L14 92 Z"/>
+        </symbol>
+        <symbol id="guan_sym_video" viewBox="0 0 100 100">
+            <path d="M20 26 L80 26 C86.63 26 92 31.37 92 38 L92 62 C92 68.63 86.63 74 80 74 L20 74 C13.37 74 8 68.63 8 62 L8 38 C8 31.37 13.37 26 20 26 Z M43 37 L43 63 L67 50 L43 37 Z"/>
+        </symbol>
+    </svg>
+
+    <header class="guan_header">
+        <div class="guan_header_inner">
+            <p class="guan_logo">
+                <svg class="guan_logo_svg" aria-hidden="true"><use href="#guan_sym_music"></use></svg>
+                网易云音乐 · 图像解决方案
+            </p>
+            <nav class="guan_nav">
+                <a class="guan_nav_link" href="4-1 字体图标下导航.html">方案一 字体图标</a>
+                <a class="guan_nav_link guan_nav_link--on" href="4-2 SVG下导航.html">方案二 SVG</a>
+                <a class="guan_nav_link" href="4-3 图标总览.html">图标总览</a>
+                <a class="guan_nav_link" href="index.html">项目首页</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="guan_page">
+        <p class="guan_tip">
+            <b>方案二 · SVG</b>：与方案一的字体图标不同，这里不加载字体文件，直接在内联
+            <code>&lt;svg&gt;</code> 中定义 <code>&lt;symbol&gt;</code>，页面用
+            <code>&lt;use href="#..."&gt;</code> 复用同一份矢量路径。图标用
+            <code>fill: currentColor</code> 跟随文字颜色，再用 <code>position: fixed</code>
+            把下导航钉在视口底部，五等分宽度依然自适应。
+        </p>
+
+        <section class="guan_block">
+            <h1 class="guan_block_title">网易云音乐 · 下导航（SVG，固定底部）</h1>
+            <p class="guan_block_desc">向下滚动本页，下导航始终贴在视口底部；窗口宽度变化时，五个导航项始终等宽均分。</p>
+
+            <div class="guan_demo_head">
+                <svg class="guan_demo_head_svg" aria-hidden="true"><use href="#guan_sym_compass"></use></svg>
+                推荐歌单
+                <span>共 8 个歌单</span>
+            </div>
+
+            <ul class="guan_cardlist">
+                <li>
+                    <img class="guan_card_cover" src="img/cover_0.jpg" alt="【民谣】民谣是毒也是药 歌单封面">
+                    <p class="guan_card_name">【民谣】民谣是毒也是药</p>
+                    <p class="guan_card_meta"><svg width="10" height="10" aria-hidden="true" style="fill:#8a8a8a;vertical-align:-1px"><use href="#guan_sym_play"></use></svg> 3680万</p>
+                </li>
+                <li>
+                    <img class="guan_card_cover" src="img/cover_1.jpg" alt="「华语」温柔治愈 歌单封面">
+                    <p class="guan_card_name">「华语」温柔治愈的宝藏歌单</p>
+                    <p class="guan_card_meta"><svg width="10" height="10" aria-hidden="true" style="fill:#8a8a8a;vertical-align:-1px"><use href="#guan_sym_play"></use></svg> 1245万</p>
+                </li>
+                <li>
+                    <img class="guan_card_cover" src="img/cover_2.jpg" alt="深夜电台 歌单封面">
+                    <p class="guan_card_name">深夜电台 · 一个人的晚安曲</p>
+                    <p class="guan_card_meta"><svg width="10" height="10" aria-hidden="true" style="fill:#8a8a8a;vertical-align:-1px"><use href="#guan_sym_play"></use></svg> 986万</p>
+                </li>
+                <li>
+                    <img class="guan_card_cover" src="img/cover_3.jpg" alt="古典轻音乐 歌单封面">
+                    <p class="guan_card_name">古典轻音乐 · 安静读书的背景音</p>
+                    <p class="guan_card_meta"><svg width="10" height="10" aria-hidden="true" style="fill:#8a8a8a;vertical-align:-1px"><use href="#guan_sym_play"></use></svg> 742万</p>
+                </li>
+                <li>
+                    <img class="guan_card_cover" src="img/cover_4.jpg" alt="电影原声 歌单封面">
+                    <p class="guan_card_name">电影原声 · 一开口就是画面</p>
+                    <p class="guan_card_meta"><svg width="10" height="10" aria-hidden="true" style="fill:#8a8a8a;vertical-align:-1px"><use href="#guan_sym_play"></use></svg> 631万</p>
+                </li>
+                <li>
+                    <img class="guan_card_cover" src="img/cover_5.jpg" alt="摇滚 歌单封面">
+                    <p class="guan_card_name">摇滚现场 · 音量请调至最大</p>
+                    <p class="guan_card_meta"><svg width="10" height="10" aria-hidden="true" style="fill:#8a8a8a;vertical-align:-1px"><use href="#guan_sym_play"></use></svg> 528万</p>
+                </li>
+                <li>
+                    <img class="guan_card_cover" src="img/cover_6.jpg" alt="爵士 歌单封面">
+                    <p class="guan_card_name">爵士小酒馆 · 微醺的午后</p>
+                    <p class="guan_card_meta"><svg width="10" height="10" aria-hidden="true" style="fill:#8a8a8a;vertical-align:-1px"><use href="#guan_sym_play"></use></svg> 417万</p>
+                </li>
+                <li>
+                    <img class="guan_card_cover" src="img/cover_7.jpg" alt="国风 歌单封面">
+                    <p class="guan_card_name">国风新声 · 一曲入山河</p>
+                    <p class="guan_card_meta"><svg width="10" height="10" aria-hidden="true" style="fill:#8a8a8a;vertical-align:-1px"><use href="#guan_sym_play"></use></svg> 356万</p>
+                </li>
+            </ul>
+        </section>
+
+        <section class="guan_block">
+            <h2 class="guan_block_title">两种图像解决方案的对比</h2>
+            <p class="guan_block_desc">同一个下导航，两种技术路线：字体图标把图形当作字符，SVG 把图形当作矢量元素。</p>
+
+            <div class="guan_table_wrap">
+            <table class="guan_table">
+                <thead>
+                    <tr>
+                        <th style="width:130px">对比项</th>
+                        <th>方案一：字体图标（iconfont）</th>
+                        <th>方案二：SVG（symbol + use）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>引入方式</td>
+                        <td><code>@font-face</code> 加载 ttf / woff 字体文件</td>
+                        <td>内联 <code>&lt;symbol&gt;</code> 定义，<code>&lt;use&gt;</code> 引用</td>
+                    </tr>
+                    <tr>
+                        <td>HTML 写法</td>
+                        <td><code>&lt;i class="guan_icon guan_icon_heart"&gt;&lt;/i&gt;</code></td>
+                        <td><code>&lt;svg&gt;&lt;use href="#guan_sym_heart"&gt;&lt;/use&gt;&lt;/svg&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td>大小控制</td>
+                        <td>CSS <code>font-size</code></td>
+                        <td>CSS <code>width / height</code></td>
+                    </tr>
+                    <tr>
+                        <td>颜色控制</td>
+                        <td>CSS <code>color</code>（字符继承文字颜色）</td>
+                        <td>CSS <code>fill: currentColor</code> 继承 <code>color</code></td>
+                    </tr>
+                    <tr>
+                        <td>多彩图标</td>
+                        <td>不支持，一个字形只能单色</td>
+                        <td>支持，可给不同 <code>path</code> 设置不同填充</td>
+                    </tr>
+                    <tr>
+                        <td>抗锯齿</td>
+                        <td>字形栅格化，极端字号下略糊</td>
+                        <td>始终按矢量渲染，任意缩放都清晰</td>
+                    </tr>
+                    <tr>
+                        <td>本页做法</td>
+                        <td>下导航随内容流排列，宽度 100%</td>
+                        <td>下导航 <code>position: fixed</code> 固定底部，宽度 100%</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </section>
+
+        <section class="guan_block">
+            <h2 class="guan_block_title">核心代码要点</h2>
+            <ul class="guan_points">
+                <li>图标仓库是一个 <code>width: 0; height: 0; overflow: hidden</code> 的内联 svg，既不占布局，也不需要额外请求图片文件。</li>
+                <li>每个 <code>&lt;symbol&gt;</code> 用 <code>viewBox="0 0 100 100"</code> 统一坐标系，因此同一份路径可以被任意尺寸的 <code>&lt;use&gt;</code> 复用。</li>
+                <li><code>.guan_tab_svg { fill: currentColor }</code> 让 SVG 的颜色跟着 <code>color</code> 走，选中态只需切换 <code>.guan_tab--on</code> 的文字颜色。</li>
+                <li><code>position: fixed; left: 0; right: 0; bottom: 0</code> 实现固定下导航，配合 <code>padding-bottom: env(safe-area-inset-bottom)</code> 适配刘海屏。</li>
+                <li>body 预留 <code>padding-bottom</code>，避免页面最后一屏内容被固定导航遮住。</li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- 下导航：SVG 方案，固定在视口底部 -->
+    <nav class="guan_tabbar" aria-label="网易云音乐下导航">
+        <a class="guan_tab guan_tab--on" href="#">
+            <svg class="guan_tab_svg" aria-hidden="true"><use href="#guan_sym_compass"></use></svg>
+            <span class="guan_tab_txt">发现</span>
+        </a>
+        <a class="guan_tab" href="#">
+            <svg class="guan_tab_svg" aria-hidden="true"><use href="#guan_sym_mic"></use></svg>
+            <span class="guan_tab_txt">播客</span>
+        </a>
+        <a class="guan_tab" href="#">
+            <svg class="guan_tab_svg" aria-hidden="true"><use href="#guan_sym_cloud"></use></svg>
+            <span class="guan_tab_txt">云村</span>
+        </a>
+        <a class="guan_tab" href="#">
+            <svg class="guan_tab_svg" aria-hidden="true"><use href="#guan_sym_heart"></use></svg>
+            <span class="guan_tab_txt">关注</span>
+        </a>
+        <a class="guan_tab" href="#">
+            <svg class="guan_tab_svg" aria-hidden="true"><use href="#guan_sym_user"></use></svg>
+            <span class="guan_tab_txt">我的</span>
+        </a>
+    </nav>
+</body>
+</html>

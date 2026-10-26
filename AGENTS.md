@@ -19,10 +19,13 @@ Static HTML/CSS portfolio — a student's "Advanced Web Design" (高级网页设
 - Each demo file is self-contained with inline `<style>` — no external CSS framework
 - Open any `.html` file directly in a browser to preview; no dev server needed
 - File naming: `{lesson-number}-{demo-number}.html` (e.g., `6-1 flex.html` = lesson 6, demo 1, flexbox topic)
+- Use only native (原生) HTML, CSS, and JavaScript — no third-party libraries, frameworks, or CDN
+- Icons must come from the local `font/` directory (iconfont 图标), referenced locally, never from an online CDN
 
 ## Naming Rules
 
 - All CSS class names, ID names, and JS variables must use the `guan_` prefix (e.g., `.guan_container`, `#guan_header`, `guan_count`)
+- Every new HTML file must include a header comment with: 姓名：关斯译，建立时间：（创建日期），使用的大模型：（本次使用的模型名称），功能名称：（该页面功能描述）
 
 ## Prompt Logging
 

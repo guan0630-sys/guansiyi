@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Awesome 字体图标</title>
+    <!--
+        姓名：关斯译
+        日期：2026-10-22
+        功能名称：使用字体图标（Font Awesome）方式展示图标，资源本地放在 cdn 目录
+    -->
+    <link rel="stylesheet" href="cdn/fontawesome/css/all.min.css">
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+        .guan_wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            padding: 30px 40px;
+        }
+        .guan_title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .guan_subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+        .guan_grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 16px;
+        }
+        .guan_item {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px 10px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .guan_item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+        }
+        .guan_icon {
+            font-size: 34px;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        .guan_label {
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+        .guan_note {
+            background: #eaf2fb;
+            border-left: 4px solid #3498db;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="guan_wrapper">
+        <h1 class="guan_title">Font Awesome 字体图标</h1>
+        <p class="guan_subtitle">使用字体（Font）方式：<i class="fab fa-font-awesome"></i> 通过 CSS 字体渲染图标</p>
+
+        <div class="guan_note">
+            通过 <code>&lt;link rel="stylesheet" href="cdn/fontawesome/css/all.min.css"&gt;</code> 本地引用，
+            再使用 <code>&lt;i class="fas fa-图标名"&gt;&lt;/i&gt;</code> 显示。字体文件从本地 <code>cdn/fontawesome/webfonts</code> 加载。
+        </div>
+
+        <div class="guan_grid">
+            <div class="guan_item">
+                <i class="fas fa-home"></i>
+                <div class="guan_label">fa-home</div>
+            </div>
+            <div class="guan_item">
+                <i class="fas fa-user"></i>
+                <div class="guan_label">fa-user</div>
+            </div>
+            <div class="guan_item">
+                <i class="fas fa-star"></i>
+                <div class="guan_label">fa-star</div>
+            </div>
+            <div class="guan_item">
+                <i class="fas fa-heart"></i>
+                <div class="guan_label">fa-heart</div>
+            </div>
+            <div class="guan_item">
+                <i class="fas fa-camera"></i>
+                <div class="guan_label">fa-camera</div>
+            </div>
+            <div class="guan_item">
+                <i class="fas fa-cog"></i>
+                <div class="guan_label">fa-cog</div>
+            </div>
+            <div class="guan_item">
+                <i class="fas fa-cloud"></i>
+                <div class="guan_label">fa-cloud</div>
+            </div>
+            <div class="guan_item">
+                <i class="fas fa-music"></i>
+                <div class="guan_label">fa-music</div>
+            </div>
+            <div class="guan_item">
+                <i class="fas fa-envelope"></i>
+                <div class="guan_label">fa-envelope</div>
+            </div>
+            <div class="guan_item">
+                <i class="fas fa-phone"></i>
+                <div class="guan_label">fa-phone</div>
+            </div>
+            <div class="guan_item">
+                <i class="fab fa-twitter"></i>
+                <div class="guan_label">fab fa-twitter</div>
+            </div>
+            <div class="guan_item">
+                <i class="fab fa-github"></i>
+                <div class="guan_label">fab fa-github</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

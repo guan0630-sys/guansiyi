@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="四级项目 图像解决方案：网易云音乐下导航，字体图标与 SVG 两种方案">
+    <title>四级项目 图像解决方案 · 网易云音乐下导航</title>
+    <!--
+        姓名：关斯译
+        学号：24001010318
+        班级：计算机24003班
+        日期：2026-10-25
+        功能名称：四级项目 —— 图像解决方案（总览页）。
+                  汇总字体图标、SVG 两套下导航方案与图标库总览，说明本次实验的技术路线、
+                  文件结构与实现要点，三个子页面各自独立、风格统一。
+    -->
+    <link rel="stylesheet" href="font/guan_iconfont.css">
+    <style>
+        /* ==================== 全局公共样式 ==================== */
+        :root {
+            --guan_red: #c20c0c;
+            --guan_dark: #242424;
+            --guan_text: #333;
+            --guan_sub: #8a8a8a;
+            --guan_line: #e1e1e1;
+            --guan_bg: #f5f5f5;
+            --guan_panel: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            color: var(--guan_text);
+            background: var(--guan_bg);
+            font: 14px/1.7 Arial, "Microsoft YaHei", sans-serif;
+        }
+
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* ==================== 页面骨架 ==================== */
+        .guan_header {
+            color: #ccc;
+            background: var(--guan_dark);
+        }
+
+        .guan_header_inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 52px;
+        }
+
+        .guan_logo {
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .guan_logo i {
+            margin-right: 6px;
+            color: var(--guan_red);
+        }
+
+        .guan_nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .guan_nav_link {
+            padding: 5px 12px;
+            border-radius: 4px;
+            color: #bdbdbd;
+            font-size: 13px;
+        }
+
+        .guan_nav_link:hover {
+            color: #fff;
+            background: #333;
+        }
+
+        .guan_nav_link--on {
+            color: #fff;
+            background: var(--guan_red);
+        }
+
+        .guan_page {
+            max-width: 960px;
+            margin: 26px auto 40px;
+            padding: 0 20px;
+        }
+
+        .guan_title {
+            font-size: 21px;
+            font-weight: normal;
+        }
+
+        .guan_sub {
+            margin-top: 6px;
+            color: var(--guan_sub);
+            font-size: 13px;
+        }
+
+        /* ==================== 方案卡片 ==================== */
+        .guan_cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 22px;
+        }
+
+        .guan_card {
+            display: flex;
+            flex-direction: column;
+            padding: 18px;
+            border: 1px solid var(--guan_line);
+            border-top: 3px solid var(--guan_red);
+            background: var(--guan_panel);
+        }
+
+        .guan_card:hover {
+            border-color: #d8d8d8;
+            border-top-color: var(--guan_red);
+        }
+
+        .guan_card_icon {
+            font-size: 26px;
+            color: var(--guan_red);
+        }
+
+        .guan_card_no {
+            margin-top: 8px;
+            color: var(--guan_sub);
+            font-size: 12px;
+        }
+
+        .guan_card_name {
+            margin-top: 2px;
+            font-size: 16px;
+        }
+
+        .guan_card_desc {
+            flex: 1 1 auto;
+            margin-top: 6px;
+            color: var(--guan_sub);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .guan_card_go {
+            margin-top: 12px;
+            color: var(--guan_red);
+            font-size: 12px;
+        }
+
+        /* ==================== 说明块 ==================== */
+        .guan_block {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--guan_panel);
+            border: 1px solid var(--guan_line);
+        }
+
+        .guan_block_title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: normal;
+        }
+
+        .guan_block_title::before {
+            content: "";
+            width: 4px;
+            height: 15px;
+            background: var(--guan_red);
+        }
+
+        .guan_points {
+            padding-left: 18px;
+            color: #555;
+            font-size: 13px;
+            list-style: disc;
+        }
+
+        .guan_points li {
+            margin-top: 6px;
+        }
+
+        .guan_points code {
+            padding: 1px 4px;
+            border-radius: 3px;
+            color: var(--guan_red);
+            background: #f6f6f6;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+
+        .guan_files {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px 20px;
+            margin-top: 8px;
+            color: #555;
+            font-size: 13px;
+        }
+
+        .guan_files code {
+            color: var(--guan_red);
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 780px) {
+            .guan_page {
+                padding: 0 12px;
+            }
+
+            .guan_cards {
+                grid-template-columns: 1fr;
+            }
+
+            .guan_files {
+                grid-template-columns: 1fr;
+            }
+
+            .guan_block {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="guan_header">
+        <div class="guan_header_inner">
+            <p class="guan_logo"><i class="guan_icon guan_icon_music"></i>网易云音乐 · 图像解决方案</p>
+            <nav class="guan_nav">
+                <a class="guan_nav_link" href="4-1 字体图标下导航.html">方案一 字体图标</a>
+                <a class="guan_nav_link" href="4-2 SVG下导航.html">方案二 SVG</a>
+                <a class="guan_nav_link" href="4-3 图标总览.html">图标总览</a>
+                <a class="guan_nav_link guan_nav_link--on" href="index.html">项目首页</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="guan_page">
+        <h1 class="guan_title">四级项目 · 图像解决方案</h1>
+        <p class="guan_sub">
+            为三级项目「网易云音乐」设计移动端下导航，分别用<b>字体图标</b>与<b>SVG</b>两种图像方案实现，
+            导航均为自适应宽度，SVG 方案额外实现底部固定效果；全部使用原生 HTML + CSS，不引入任何第三方库与在线 CDN。
+        </p>
+
+        <ul class="guan_cards">
+            <li>
+                <a class="guan_card" href="4-1 字体图标下导航.html">
+                    <i class="guan_icon guan_icon_music guan_card_icon"></i>
+                    <p class="guan_card_no">方案一</p>
+                    <h2 class="guan_card_name">字体图标下导航</h2>
+                    <p class="guan_card_desc">@font-face 加载本地 guan_iconfont 字体，图标即文字；font-size 控大小、color 控颜色，5 项 flex: 1 1 0 自适应均分。</p>
+                    <p class="guan_card_go">进入页面 <i class="guan_icon guan_icon_play"></i></p>
+                </a>
+            </li>
+            <li>
+                <a class="guan_card" href="4-2 SVG下导航.html">
+                    <i class="guan_icon guan_icon_compass guan_card_icon"></i>
+                    <p class="guan_card_no">方案二</p>
+                    <h2 class="guan_card_name">SVG 下导航</h2>
+                    <p class="guan_card_desc">内联 symbol + use 复用矢量路径，fill: currentColor 换色，position: fixed 固定在视口底部，同样自适应宽度。</p>
+                    <p class="guan_card_go">进入页面 <i class="guan_icon guan_icon_play"></i></p>
+                </a>
+            </li>
+            <li>
+                <a class="guan_card" href="4-3 图标总览.html">
+                    <i class="guan_icon guan_icon_heart guan_card_icon"></i>
+                    <p class="guan_card_no">图标库</p>
+                    <h2 class="guan_card_name">图标总览</h2>
+                    <p class="guan_card_desc">11 个图标的字体图标 / SVG 双方案对照表，附带 16~48px 尺寸与 5 种颜色的使用效果。</p>
+                    <p class="guan_card_go">进入页面 <i class="guan_icon guan_icon_play"></i></p>
+                </a>
+            </li>
+        </ul>
+
+        <section class="guan_block">
+            <h2 class="guan_block_title">实验要求与完成情况</h2>
+            <ul class="guan_points">
+                <li><b>获得图标</b>：参考 iconfont.cn 图标库造型，自绘 11 个 100 × 100 栅格的矢量图标，导出为字体文件与 SVG 路径两种格式，图标不要求与原型完全一致。</li>
+                <li><b>自适应宽度下导航</b>：两个方案都使用 <code>flex: 1 1 0</code> + <code>min-width: 0</code>，在 320 / 375 / 414 / 768 / 1440px 视口下均等宽均分，文字不换行不溢出。</li>
+                <li><b>技术上有区别</b>：方案一是字体图标，方案二是 SVG；前者靠字形、后者靠矢量图形，两者在大小、颜色、多色支持上的差异见 4-2 页对照表。</li>
+                <li><b>固定效果</b>：三级项目的下导航属于固定在屏幕底部的导航，SVG 方案用 <code>position: fixed; bottom: 0</code> 实现，并用 <code>env(safe-area-inset-bottom)</code> 适配刘海屏。</li>
+                <li><b>测试</b>：以 Edge（Chromium）为主，在 390px / 768px / 1440px 三种视口下逐一检查，兼容写法上保留了 <code>-webkit-</code> 前缀与字体回退。</li>
+            </ul>
+        </section>
+
+        <section class="guan_block">
+            <h2 class="guan_block_title">文件结构</h2>
+            <div class="guan_files">
+                <p><code>index.html</code> 项目总览（本页）</p>
+                <p><code>4-1 字体图标下导航.html</code> 字体图标方案</p>
+                <p><code>4-2 SVG下导航.html</code> SVG 固定下导航</p>
+                <p><code>4-3 图标总览.html</code> 图标库对照</p>
+                <p><code>font/guan_iconfont.css</code> 字体图标样式表</p>
+                <p><code>font/guan_iconfont.ttf</code> 字体文件（TrueType）</p>
+                <p><code>font/guan_iconfont.woff</code> 字体文件（Web 优化）</p>
+                <p><code>img/</code> 歌单封面与歌手头像素材</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

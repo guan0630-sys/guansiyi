@@ -1,0 +1,79 @@
+/*
+ * guan_iconfont 字体图标样式表
+ * 姓名：关斯译    学号：24001010318    班级：计算机24003班
+ * 日期：2026-10-25
+ * 功能名称：自定义图标字体（图标库）样式表。
+ *          图标按 1024 单位栅格自绘矢量轮廓后导出为 ttf/woff，
+ *          通过 @font-face 在本地引用，不依赖任何在线 CDN。
+ *          使用方法：<i class="guan_icon guan_icon_music"></i>
+ */
+@font-face {
+    font-family: "guan_iconfont";
+    src: url("guan_iconfont.woff") format("woff"),
+         url("guan_iconfont.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    /* 图标字体必须禁止合成加粗/倾斜，否则轮廓会被二次变形 */
+    font-synthesis: none;
+    font-display: block;
+}
+
+.guan_icon {
+    display: inline-block;
+    font-family: "guan_iconfont" !important;
+    font-style: normal;
+    font-weight: normal;
+    /* 行高 1 让图标高度等于 font-size，便于和文字基线对齐 */
+    line-height: 1;
+    /* 屏幕上的字形边缘更平滑 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-transform: none;
+    speak: none;
+}
+
+/* ---------- 单个图标（Unicode 私有区 E001 ~ E00B） ---------- */
+/* 01 音乐 guan_icon_music */
+.guan_icon_music::before {
+    content: "\e001";
+}
+
+.guan_icon_play::before {
+    content: "\e002";
+}
+
+.guan_icon_search::before {
+    content: "\e003";
+}
+
+.guan_icon_home::before {
+    content: "\e004";
+}
+
+.guan_icon_compass::before {
+    content: "\e005";
+}
+
+.guan_icon_mic::before {
+    content: "\e006";
+}
+
+.guan_icon_cloud::before {
+    content: "\e007";
+}
+
+.guan_icon_user::before {
+    content: "\e008";
+}
+
+.guan_icon_heart::before {
+    content: "\e009";
+}
+
+.guan_icon_download::before {
+    content: "\e00a";
+}
+
+.guan_icon_video::before {
+    content: "\e00b";
+}

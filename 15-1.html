@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数7游戏</title>
+    <!--
+        姓名：关斯译
+        建立时间：2026-10-26
+        使用的大模型：GLM-5.3-Flash
+        功能名称：数7游戏——100个盒子，7的倍数或含数字7的显示空盒子，其余显示数字
+    -->
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+        .guan_wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            padding: 30px 40px;
+        }
+        .guan_title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .guan_subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+        .guan_legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #555;
+        }
+        .guan_legend_span {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            vertical-align: -3px;
+            margin-right: 6px;
+        }
+        .guan_legend_normal {
+            background: #3498db;
+        }
+        .guan_legend_empty {
+            background: #fff;
+            border: 2px dashed #e74c3c;
+        }
+        .guan_grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+        }
+        .guan_box {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+        .guan_normal {
+            background: #3498db;
+            color: #fff;
+        }
+        .guan_normal:hover {
+            background: #2980b9;
+        }
+        .guan_empty {
+            background: #fff;
+            border: 2px dashed #e74c3c;
+            color: transparent;
+        }
+        .guan_stat {
+            text-align: center;
+            margin-top: 24px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .guan_stat strong {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="guan_wrapper">
+        <h1 class="guan_title">数7游戏（1~100）</h1>
+        <p class="guan_subtitle">规则：遇到 7 的倍数、个位为 7、十位为 7 的数字时敲空（显示空盒子），其余数字正常显示</p>
+
+        <div class="guan_legend">
+            <span><span class="guan_legend_span guan_legend_normal"></span>普通数字（安全）</span>
+            <span><span class="guan_legend_span guan_legend_empty"></span>逢7敲空（跳过）</span>
+        </div>
+
+        <div class="guan_grid" id="guan_grid"></div>
+
+        <p class="guan_stat" id="guan_stat"></p>
+    </div>
+
+    <script>
+        // 判断是否"逢7"：7的倍数、个位为7、十位为7
+        function guan_isSeven(guan_num) {
+            if (guan_num % 7 === 0) {
+                return true;                       // 7的倍数
+            }
+            if (guan_num % 10 === 7) {
+                return true;                       // 个位数为7
+            }
+            if (Math.floor(guan_num / 10) === 7) {
+                return true;                       // 十位数为7（70~79）
+            }
+            return false;
+        }
+
+        // 生成100个盒子
+        var guan_countEmpty = 0;
+        var guan_grid = document.getElementById("guan_grid");
+        for (var guan_i = 1; guan_i <= 100; guan_i++) {
+            var guan_box = document.createElement("div");
+            guan_box.textContent = guan_i;
+            if (guan_isSeven(guan_i)) {
+                guan_box.className = "guan_box guan_empty";  // 满足数7规则：空盒子
+                guan_countEmpty++;
+            } else {
+                guan_box.className = "guan_box guan_normal"; // 不满足：显示数字
+            }
+            guan_grid.appendChild(guan_box);
+        }
+
+        // 统计结果
+        document.getElementById("guan_stat").innerHTML =
+            "共 100 个数字，其中 <strong>" + guan_countEmpty + "</strong> 个需要敲空跳过，" +
+            (100 - guan_countEmpty) + " 个正常报数。";
+    </script>
+</body>
+</html>

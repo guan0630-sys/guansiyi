@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="四级项目 图像解决方案：guan_iconfont 图标库总览，字体图标与 SVG 双方案对照">
+    <title>4-3 图标总览 · guan_iconfont</title>
+    <!--
+        姓名：关斯译
+        学号：24001010318
+        班级：计算机24003班
+        日期：2026-10-25
+        功能名称：四级项目 —— 图像解决方案（图标总览）。
+                  把图标库里 11 个图标用"字体图标"和"SVG"两种方式同时展示，
+                  并演示同一图标在不同 font-size / width 与不同 color / fill 下的效果，
+                  作为字体图标与 SVG 两条图像方案的对照页。
+    -->
+    <link rel="stylesheet" href="font/guan_iconfont.css">
+    <style>
+        /* ==================== 全局公共样式 ==================== */
+        :root {
+            --guan_red: #c20c0c;
+            --guan_dark: #242424;
+            --guan_text: #333;
+            --guan_sub: #8a8a8a;
+            --guan_line: #e1e1e1;
+            --guan_bg: #f5f5f5;
+            --guan_panel: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            color: var(--guan_text);
+            background: var(--guan_bg);
+            font: 14px/1.7 Arial, "Microsoft YaHei", sans-serif;
+        }
+
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* 图标精灵定义区 */
+        .guan_sprite {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+
+        /* ==================== 页面骨架 ==================== */
+        .guan_header {
+            color: #ccc;
+            background: var(--guan_dark);
+        }
+
+        .guan_header_inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 52px;
+        }
+
+        .guan_logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .guan_logo i {
+            color: var(--guan_red);
+            font-size: 16px;
+        }
+
+        .guan_nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .guan_nav_link {
+            padding: 5px 12px;
+            border-radius: 4px;
+            color: #bdbdbd;
+            font-size: 13px;
+        }
+
+        .guan_nav_link:hover {
+            color: #fff;
+            background: #333;
+        }
+
+        .guan_nav_link--on {
+            color: #fff;
+            background: var(--guan_red);
+        }
+
+        .guan_page {
+            max-width: 960px;
+            margin: 26px auto 40px;
+            padding: 0 20px;
+        }
+
+        .guan_tip {
+            margin-bottom: 18px;
+            padding: 10px 14px;
+            border-left: 3px solid var(--guan_red);
+            color: var(--guan_sub);
+            background: #fff;
+            font-size: 13px;
+        }
+
+        .guan_tip b {
+            color: var(--guan_text);
+        }
+
+        .guan_block {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--guan_panel);
+            border: 1px solid var(--guan_line);
+        }
+
+        .guan_block_title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            font-size: 16px;
+            font-weight: normal;
+        }
+
+        .guan_block_title::before {
+            content: "";
+            width: 4px;
+            height: 15px;
+            background: var(--guan_red);
+        }
+
+        .guan_block_desc {
+            color: var(--guan_sub);
+            font-size: 13px;
+        }
+
+        /* ==================== 图标清单表格 ==================== */
+        /* 窄屏下表格列很多，用滚动容器兜住，避免各列被压成一字一行 */
+        .guan_table_wrap {
+            margin-top: 14px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .guan_table_hint {
+            display: none;
+            margin-top: 6px;
+            color: var(--guan_sub);
+            font-size: 12px;
+        }
+
+        .guan_table {
+            width: 100%;
+            min-width: 660px;
+            margin-top: 0;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .guan_table th,
+        .guan_table td {
+            padding: 8px 10px;
+            border: 1px solid var(--guan_line);
+            vertical-align: middle;
+        }
+
+        .guan_table th {
+            color: #fff;
+            background: #4a4a4a;
+            font-weight: normal;
+            text-align: left;
+        }
+
+        .guan_table td {
+            text-align: left;
+        }
+
+        .guan_table tr:nth-child(even) td {
+            background: #fafafa;
+        }
+
+        .guan_table code {
+            padding: 1px 4px;
+            border-radius: 3px;
+            color: var(--guan_red);
+            background: #f6f6f6;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+
+        .guan_cell_no {
+            width: 58px;
+            color: var(--guan_sub);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .guan_cell_preview {
+            width: 74px;
+            text-align: center;
+        }
+
+        .guan_cell_preview i {
+            font-size: 26px;
+            color: #333;
+        }
+
+        .guan_svg_prev {
+            width: 26px;
+            height: 26px;
+            fill: #333;
+            vertical-align: middle;
+        }
+
+        .guan_cell_meaning {
+            color: var(--guan_sub);
+            font-size: 12px;
+        }
+
+        /* ==================== 尺寸与颜色演示 ==================== */
+        .guan_demo_row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 26px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--guan_line);
+        }
+
+        .guan_demo_item {
+            text-align: center;
+        }
+
+        .guan_demo_item i,
+        .guan_demo_item svg {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .guan_demo_name {
+            margin-top: 6px;
+            color: var(--guan_sub);
+            font-size: 12px;
+        }
+
+        .guan_size16 {
+            font-size: 16px;
+        }
+
+        .guan_size20 {
+            font-size: 20px;
+        }
+
+        .guan_size24 {
+            font-size: 24px;
+        }
+
+        .guan_size32 {
+            font-size: 32px;
+        }
+
+        .guan_size48 {
+            font-size: 48px;
+        }
+
+        .guan_svg16 {
+            width: 16px;
+            height: 16px;
+        }
+
+        .guan_svg20 {
+            width: 20px;
+            height: 20px;
+        }
+
+        .guan_svg24 {
+            width: 24px;
+            height: 24px;
+        }
+
+        .guan_svg32 {
+            width: 32px;
+            height: 32px;
+        }
+
+        .guan_svg48 {
+            width: 48px;
+            height: 48px;
+        }
+
+        .guan_c1 {
+            color: #333;
+            fill: #333;
+        }
+
+        .guan_c2 {
+            color: #8a8a8a;
+            fill: #8a8a8a;
+        }
+
+        .guan_c3 {
+            color: var(--guan_red);
+            fill: var(--guan_red);
+        }
+
+        .guan_c4 {
+            color: #2a7fff;
+            fill: #2a7fff;
+        }
+
+        .guan_c5 {
+            color: #f0a020;
+            fill: #f0a020;
+        }
+
+        /* ==================== 要点说明 ==================== */
+        .guan_points {
+            margin-top: 8px;
+            padding-left: 18px;
+            color: #555;
+            font-size: 13px;
+            list-style: disc;
+        }
+
+        .guan_points li {
+            margin-top: 6px;
+        }
+
+        .guan_points code {
+            padding: 1px 4px;
+            border-radius: 3px;
+            color: var(--guan_red);
+            background: #f6f6f6;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 780px) {
+            .guan_page {
+                padding: 0 12px;
+            }
+
+            .guan_block {
+                padding: 14px;
+            }
+
+            .guan_table {
+                font-size: 12px;
+            }
+
+            .guan_table_hint {
+                display: block;
+            }
+
+            .guan_table th,
+            .guan_table td {
+                padding: 6px;
+            }
+
+            .guan_demo_row {
+                gap: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 图标精灵：与 4-2 SVG下导航.html 使用完全相同的路径数据 -->
+    <svg class="guan_sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="guan_sym_music" viewBox="0 0 100 100">
+            <path d="M41 74 C41 78.97 35.63 83 29 83 C22.37 83 17 78.97 17 74 C17 69.03 22.37 65 29 65 C35.63 65 41 69.03 41 74 Z M77 64 C77 68.97 71.63 73 65 73 C58.37 73 53 68.97 53 64 C53 59.03 58.37 55 65 55 C71.63 55 77 59.03 77 64 Z M38 22 L41.5 22 C42.05 22 42.5 22.45 42.5 23 L42.5 74 C42.5 74.55 42.05 75 41.5 75 L38 75 C37.45 75 37 74.55 37 74 L37 23 C37 22.45 37.45 22 38 22 Z M74 12 L77.5 12 C78.05 12 78.5 12.45 78.5 13 L78.5 64 C78.5 64.55 78.05 65 77.5 65 L74 65 C73.45 65 73 64.55 73 64 L73 13 C73 12.45 73.45 12 74 12 Z M37 22 L78.5 12 L78.5 26 L37 36 Z"/>
+        </symbol>
+        <symbol id="guan_sym_play" viewBox="0 0 100 100">
+            <path d="M92 50 C92 73.2 73.2 92 50 92 C26.8 92 8 73.2 8 50 C8 26.8 26.8 8 50 8 C73.2 8 92 26.8 92 50 Z M38 29 L38 71 L77 50 L38 29 Z"/>
+        </symbol>
+        <symbol id="guan_sym_search" viewBox="0 0 100 100">
+            <path d="M75 42 C75 60.23 60.23 75 42 75 C23.77 75 9 60.23 9 42 C9 23.77 23.77 9 42 9 C60.23 9 75 23.77 75 42 Z M65 42 C65 29.3 54.7 19 42 19 C29.3 19 19 29.3 19 42 C19 54.7 29.3 65 42 65 C54.7 65 65 54.7 65 42 Z M55.47 64.53 L64.53 55.47 L83.53 74.47 L74.47 83.53 L55.47 64.53 Z M66.4 60 C66.4 63.53 63.53 66.4 60 66.4 C56.47 66.4 53.6 63.53 53.6 60 C53.6 56.47 56.47 53.6 60 53.6 C63.53 53.6 66.4 56.47 66.4 60 Z M85.4 79 C85.4 82.53 82.53 85.4 79 85.4 C75.47 85.4 72.6 82.53 72.6 79 C72.6 75.47 75.47 72.6 79 72.6 C82.53 72.6 85.4 75.47 85.4 79 Z"/>
+        </symbol>
+        <symbol id="guan_sym_home" viewBox="0 0 100 100">
+            <path d="M50 6 L96 54 L4 54 Z M20 44 L80 44 C82.21 44 84 45.79 84 48 L84 86 C84 88.21 82.21 90 80 90 L20 90 C17.79 90 16 88.21 16 86 L16 48 C16 45.79 17.79 44 20 44 Z M42 64 L42 90 L58 90 L58 64 L42 64 Z"/>
+        </symbol>
+        <symbol id="guan_sym_compass" viewBox="0 0 100 100">
+            <path d="M92 50 C92 73.2 73.2 92 50 92 C26.8 92 8 73.2 8 50 C8 26.8 26.8 8 50 8 C73.2 8 92 26.8 92 50 Z M84 50 C84 31.22 68.78 16 50 16 C31.22 16 16 31.22 16 50 C16 68.78 31.22 84 50 84 C68.78 84 84 68.78 84 50 Z M50 18 L64 50 L50 82 L36 50 Z"/>
+        </symbol>
+        <symbol id="guan_sym_mic" viewBox="0 0 100 100">
+            <path d="M50 8 L50 8 C56.63 8 62 13.37 62 20 L62 42 C62 48.63 56.63 54 50 54 L50 54 C43.37 54 38 48.63 38 42 L38 20 C38 13.37 43.37 8 50 8 Z M77 46 L76.83 49.02 L76.32 52.01 L75.48 54.92 L74.33 57.71 L72.86 60.36 L71.11 62.83 L69.09 65.09 L66.83 67.11 L64.36 68.86 L61.71 70.33 L58.92 71.48 L56.01 72.32 L53.02 72.83 L50 73 L46.98 72.83 L43.99 72.32 L41.08 71.48 L38.29 70.33 L35.64 68.86 L33.17 67.11 L30.91 65.09 L28.89 62.83 L27.14 60.36 L25.67 57.71 L24.52 54.92 L23.68 52.01 L23.17 49.02 L23 46 L30 46 L30.13 48.24 L30.5 50.45 L31.12 52.61 L31.98 54.68 L33.07 56.64 L34.36 58.47 L35.86 60.14 L37.53 61.64 L39.36 62.93 L41.32 64.02 L43.39 64.88 L45.55 65.5 L47.76 65.87 L50 66 L52.24 65.87 L54.45 65.5 L56.61 64.88 L58.68 64.02 L60.64 62.93 L62.47 61.64 L64.14 60.14 L65.64 58.47 L66.93 56.64 L68.02 54.68 L68.88 52.61 L69.5 50.45 L69.87 48.24 L70 46 Z M47.5 72 L52.5 72 C53.05 72 53.5 72.45 53.5 73 L53.5 81 C53.5 81.55 53.05 82 52.5 82 L47.5 82 C46.95 82 46.5 81.55 46.5 81 L46.5 73 C46.5 72.45 46.95 72 47.5 72 Z M34 82 L66 82 C68.21 82 70 83.79 70 86 L70 86 C70 88.21 68.21 90 66 90 L34 90 C31.79 90 30 88.21 30 86 L30 86 C30 83.79 31.79 82 34 82 Z"/>
+        </symbol>
+        <symbol id="guan_sym_cloud" viewBox="0 0 100 100">
+            <path d="M28 48 L72 48 C73.1 48 74 48.9 74 50 L74 70 C74 71.1 73.1 72 72 72 L28 72 C26.9 72 26 71.1 26 70 L26 50 C26 48.9 26.9 48 28 48 Z M52 50 C52 58.84 44.84 66 36 66 C27.16 66 20 58.84 20 50 C20 41.16 27.16 34 36 34 C44.84 34 52 41.16 52 50 Z M77 42 C77 53.6 67.6 63 56 63 C44.4 63 35 53.6 35 42 C35 30.4 44.4 21 56 21 C67.6 21 77 30.4 77 42 Z M87 54 C87 61.18 81.18 67 74 67 C66.82 67 61 61.18 61 54 C61 46.82 66.82 41 74 41 C81.18 41 87 46.82 87 54 Z"/>
+        </symbol>
+        <symbol id="guan_sym_user" viewBox="0 0 100 100">
+            <path d="M68 29 C68 38.94 59.94 47 50 47 C40.06 47 32 38.94 32 29 C32 19.06 40.06 11 50 11 C59.94 11 68 19.06 68 29 Z M36 56 L64 56 C73.39 56 81 63.61 81 73 L81 73 C81 82.39 73.39 90 64 90 L36 90 C26.61 90 19 82.39 19 73 L19 73 C19 63.61 26.61 56 36 56 Z"/>
+        </symbol>
+        <symbol id="guan_sym_heart" viewBox="0 0 100 100">
+            <path d="M51 36 C51 45.94 42.94 54 33 54 C23.06 54 15 45.94 15 36 C15 26.06 23.06 18 33 18 C42.94 18 51 26.06 51 36 Z M85 36 C85 45.94 76.94 54 67 54 C57.06 54 49 45.94 49 36 C49 26.06 57.06 18 67 18 C76.94 18 85 26.06 85 36 Z M15 43 L85 43 L50 87 L15 43 Z"/>
+        </symbol>
+        <symbol id="guan_sym_download" viewBox="0 0 100 100">
+            <path d="M50 8 L75 36 L59 36 L59 62 L41 62 L41 36 L25 36 Z M14 66 L24 66 L24 82 L76 82 L76 66 L86 66 L86 92 L14 92 Z"/>
+        </symbol>
+        <symbol id="guan_sym_video" viewBox="0 0 100 100">
+            <path d="M20 26 L80 26 C86.63 26 92 31.37 92 38 L92 62 C92 68.63 86.63 74 80 74 L20 74 C13.37 74 8 68.63 8 62 L8 38 C8 31.37 13.37 26 20 26 Z M43 37 L43 63 L67 50 L43 37 Z"/>
+        </symbol>
+    </svg>
+
+    <header class="guan_header">
+        <div class="guan_header_inner">
+            <p class="guan_logo"><i class="guan_icon guan_icon_music"></i>网易云音乐 · 图像解决方案</p>
+            <nav class="guan_nav">
+                <a class="guan_nav_link" href="4-1 字体图标下导航.html">方案一 字体图标</a>
+                <a class="guan_nav_link" href="4-2 SVG下导航.html">方案二 SVG</a>
+                <a class="guan_nav_link guan_nav_link--on" href="4-3 图标总览.html">图标总览</a>
+                <a class="guan_nav_link" href="index.html">项目首页</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="guan_page">
+        <p class="guan_tip">
+            <b>guan_iconfont 图标库</b>：共 11 个图标，全部按 100 × 100 的设计栅格自绘矢量轮廓，
+            再分别导出为<b>字体文件</b>（<code>font/guan_iconfont.ttf</code> /
+            <code>guan_iconfont.woff</code>）和 <b>SVG 路径</b>。下表把两种方案的显示效果并排对照，
+            两者使用同一份轮廓数据，所以形状完全一致。
+        </p>
+
+        <section class="guan_block">
+            <h1 class="guan_block_title">图标清单（字体图标 / SVG 对照）</h1>
+            <p class="guan_block_desc">字符编码占用 Unicode 私有区 E001 ~ E00B，不会与正常汉字冲突。</p>
+            <p class="guan_table_hint">提示：窄屏下表格可左右滑动，查看编码与用途两列。</p>
+
+            <div class="guan_table_wrap">
+            <table class="guan_table">
+                <thead>
+                    <tr>
+                        <th class="guan_cell_no">序号</th>
+                        <th class="guan_cell_preview">字体图标</th>
+                        <th class="guan_cell_preview">SVG</th>
+                        <th style="width:150px">图标名称</th>
+                        <th style="width:210px">类名 / 符号 id</th>
+                        <th style="width:86px">编码</th>
+                        <th>用途</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="guan_cell_no">01</td>
+                        <td class="guan_cell_preview"><i class="guan_icon guan_icon_music"></i></td>
+                        <td class="guan_cell_preview"><svg class="guan_svg_prev" aria-hidden="true"><use href="#guan_sym_music"></use></svg></td>
+                        <td>音乐</td>
+                        <td><code>guan_icon_music</code></td>
+                        <td><code>E001</code></td>
+                        <td class="guan_cell_meaning">品牌标识 / 歌曲</td>
+                    </tr>
+                    <tr>
+                        <td class="guan_cell_no">02</td>
+                        <td class="guan_cell_preview"><i class="guan_icon guan_icon_play"></i></td>
+                        <td class="guan_cell_preview"><svg class="guan_svg_prev" aria-hidden="true"><use href="#guan_sym_play"></use></svg></td>
+                        <td>播放</td>
+                        <td><code>guan_icon_play</code></td>
+                        <td><code>E002</code></td>
+                        <td class="guan_cell_meaning">播放按钮 / 播放量</td>
+                    </tr>
+                    <tr>
+                        <td class="guan_cell_no">03</td>
+                        <td class="guan_cell_preview"><i class="guan_icon guan_icon_search"></i></td>
+                        <td class="guan_cell_preview"><svg class="guan_svg_prev" aria-hidden="true"><use href="#guan_sym_search"></use></svg></td>
+                        <td>搜索</td>
+                        <td><code>guan_icon_search</code></td>
+                        <td><code>E003</code></td>
+                        <td class="guan_cell_meaning">顶部搜索入口</td>
+                    </tr>
+                    <tr>
+                        <td class="guan_cell_no">04</td>
+                        <td class="guan_cell_preview"><i class="guan_icon guan_icon_home"></i></td>
+                        <td class="guan_cell_preview"><svg class="guan_svg_prev" aria-hidden="true"><use href="#guan_sym_home"></use></svg></td>
+                        <td>首页</td>
+                        <td><code>guan_icon_home</code></td>
+                        <td><code>E004</code></td>
+                        <td class="guan_cell_meaning">回到首页</td>
+                    </tr>
+                    <tr>
+                        <td class="guan_cell_no">05</td>
+                        <td class="guan_cell_preview"><i class="guan_icon guan_icon_compass"></i></td>
+                        <td class="guan_cell_preview"><svg class="guan_svg_prev" aria-hidden="true"><use href="#guan_sym_compass"></use></svg></td>
+                        <td>发现</td>
+                        <td><code>guan_icon_compass</code></td>
+                        <td><code>E005</code></td>
+                        <td class="guan_cell_meaning">下导航 · 发现</td>
+                    </tr>
+                    <tr>
+                        <td class="guan_cell_no">06</td>
+                        <td class="guan_cell_preview"><i class="guan_icon guan_icon_mic"></i></td>
+                        <td class="guan_cell_preview"><svg class="guan_svg_prev" aria-hidden="true"><use href="#guan_sym_mic"></use></svg></td>
+                        <td>播客</td>
+                        <td><code>guan_icon_mic</code></td>
+                        <td><code>E006</code></td>
+                        <td class="guan_cell_meaning">下导航 · 播客</td>
+                    </tr>
+                    <tr>
+                        <td class="guan_cell_no">07</td>
+                        <td class="guan_cell_preview"><i class="guan_icon guan_icon_cloud"></i></td>
+                        <td class="guan_cell_preview"><svg class="guan_svg_prev" aria-hidden="true"><use href="#guan_sym_cloud"></use></svg></td>
+                        <td>云村</td>
+                        <td><code>guan_icon_cloud</code></td>
+                        <td><code>E007</code></td>
+                        <td class="guan_cell_meaning">下导航 · 云村</td>
+                    </tr>
+                    <tr>
+                        <td class="guan_cell_no">08</td>
+                        <td class="guan_cell_preview"><i class="guan_icon guan_icon_user"></i></td>
+                        <td class="guan_cell_preview"><svg class="guan_svg_prev" aria-hidden="true"><use href="#guan_sym_user"></use></svg></td>
+                        <td>我的</td>
+                        <td><code>guan_icon_user</code></td>
+                        <td><code>E008</code></td>
+                        <td class="guan_cell_meaning">下导航 · 我的</td>
+                    </tr>
+                    <tr>
+                        <td class="guan_cell_no">09</td>
+                        <td class="guan_cell_preview"><i class="guan_icon guan_icon_heart"></i></td>
+                        <td class="guan_cell_preview"><svg class="guan_svg_prev" aria-hidden="true"><use href="#guan_sym_heart"></use></svg></td>
+                        <td>关注 / 喜欢</td>
+                        <td><code>guan_icon_heart</code></td>
+                        <td><code>E009</code></td>
+                        <td class="guan_cell_meaning">下导航 · 关注</td>
+                    </tr>
+                    <tr>
+                        <td class="guan_cell_no">10</td>
+                        <td class="guan_cell_preview"><i class="guan_icon guan_icon_download"></i></td>
+                        <td class="guan_cell_preview"><svg class="guan_svg_prev" aria-hidden="true"><use href="#guan_sym_download"></use></svg></td>
+                        <td>下载</td>
+                        <td><code>guan_icon_download</code></td>
+                        <td><code>E00A</code></td>
+                        <td class="guan_cell_meaning">歌曲下载</td>
+                    </tr>
+                    <tr>
+                        <td class="guan_cell_no">11</td>
+                        <td class="guan_cell_preview"><i class="guan_icon guan_icon_video"></i></td>
+                        <td class="guan_cell_preview"><svg class="guan_svg_prev" aria-hidden="true"><use href="#guan_sym_video"></use></svg></td>
+                        <td>视频</td>
+                        <td><code>guan_icon_video</code></td>
+                        <td><code>E00B</code></td>
+                        <td class="guan_cell_meaning">MV / 视频</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </section>
+
+        <section class="guan_block">
+            <h2 class="guan_block_title">同一图标 · 不同尺寸</h2>
+            <p class="guan_block_desc">字体图标改 <code>font-size</code>，SVG 改 <code>width / height</code>，两者都能无损缩放。</p>
+
+            <div class="guan_demo_row">
+                <div class="guan_demo_item">
+                    <i class="guan_icon guan_icon_heart guan_size16"></i>
+                    <p class="guan_demo_name">字体 16px</p>
+                </div>
+                <div class="guan_demo_item">
+                    <i class="guan_icon guan_icon_heart guan_size20"></i>
+                    <p class="guan_demo_name">字体 20px</p>
+                </div>
+                <div class="guan_demo_item">
+                    <i class="guan_icon guan_icon_heart guan_size24"></i>
+                    <p class="guan_demo_name">字体 24px</p>
+                </div>
+                <div class="guan_demo_item">
+                    <i class="guan_icon guan_icon_heart guan_size32"></i>
+                    <p class="guan_demo_name">字体 32px</p>
+                </div>
+                <div class="guan_demo_item">
+                    <i class="guan_icon guan_icon_heart guan_size48"></i>
+                    <p class="guan_demo_name">字体 48px</p>
+                </div>
+            </div>
+
+            <div class="guan_demo_row">
+                <div class="guan_demo_item">
+                    <svg class="guan_svg16 guan_c1" aria-hidden="true"><use href="#guan_sym_heart"></use></svg>
+                    <p class="guan_demo_name">SVG 16px</p>
+                </div>
+                <div class="guan_demo_item">
+                    <svg class="guan_svg20 guan_c1" aria-hidden="true"><use href="#guan_sym_heart"></use></svg>
+                    <p class="guan_demo_name">SVG 20px</p>
+                </div>
+                <div class="guan_demo_item">
+                    <svg class="guan_svg24 guan_c1" aria-hidden="true"><use href="#guan_sym_heart"></use></svg>
+                    <p class="guan_demo_name">SVG 24px</p>
+                </div>
+                <div class="guan_demo_item">
+                    <svg class="guan_svg32 guan_c1" aria-hidden="true"><use href="#guan_sym_heart"></use></svg>
+                    <p class="guan_demo_name">SVG 32px</p>
+                </div>
+                <div class="guan_demo_item">
+                    <svg class="guan_svg48 guan_c1" aria-hidden="true"><use href="#guan_sym_heart"></use></svg>
+                    <p class="guan_demo_name">SVG 48px</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="guan_block">
+            <h2 class="guan_block_title">同一图标 · 不同颜色</h2>
+            <p class="guan_block_desc">字体图标用 <code>color</code> 换色，SVG 用 <code>fill</code> 换色，都是一行 CSS 的事。</p>
+
+            <div class="guan_demo_row">
+                <div class="guan_demo_item">
+                    <i class="guan_icon guan_icon_cloud guan_size32 guan_c1"></i>
+                    <p class="guan_demo_name">#333333</p>
+                </div>
+                <div class="guan_demo_item">
+                    <i class="guan_icon guan_icon_cloud guan_size32 guan_c2"></i>
+                    <p class="guan_demo_name">#8A8A8A</p>
+                </div>
+                <div class="guan_demo_item">
+                    <i class="guan_icon guan_icon_cloud guan_size32 guan_c3"></i>
+                    <p class="guan_demo_name">#C20C0C</p>
+                </div>
+                <div class="guan_demo_item">
+                    <i class="guan_icon guan_icon_cloud guan_size32 guan_c4"></i>
+                    <p class="guan_demo_name">#2A7FFF</p>
+                </div>
+                <div class="guan_demo_item">
+                    <i class="guan_icon guan_icon_cloud guan_size32 guan_c5"></i>
+                    <p class="guan_demo_name">#F0A020</p>
+                </div>
+            </div>
+
+            <div class="guan_demo_row">
+                <div class="guan_demo_item">
+                    <svg class="guan_svg32 guan_c1" aria-hidden="true"><use href="#guan_sym_cloud"></use></svg>
+                    <p class="guan_demo_name">#333333</p>
+                </div>
+                <div class="guan_demo_item">
+                    <svg class="guan_svg32 guan_c2" aria-hidden="true"><use href="#guan_sym_cloud"></use></svg>
+                    <p class="guan_demo_name">#8A8A8A</p>
+                </div>
+                <div class="guan_demo_item">
+                    <svg class="guan_svg32 guan_c3" aria-hidden="true"><use href="#guan_sym_cloud"></use></svg>
+                    <p class="guan_demo_name">#C20C0C</p>
+                </div>
+                <div class="guan_demo_item">
+                    <svg class="guan_svg32 guan_c4" aria-hidden="true"><use href="#guan_sym_cloud"></use></svg>
+                    <p class="guan_demo_name">#2A7FFF</p>
+                </div>
+                <div class="guan_demo_item">
+                    <svg class="guan_svg32 guan_c5" aria-hidden="true"><use href="#guan_sym_cloud"></use></svg>
+                    <p class="guan_demo_name">#F0A020</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="guan_block">
+            <h2 class="guan_block_title">图标的获得与导出</h2>
+            <ul class="guan_points">
+                <li>参考 iconfont.cn 图标库中同类图标的造型，按网易云音乐下导航的实际观感在 100 × 100 设计栅格内<b>自行绘制</b>轮廓，保证 11 个图标的线宽、留白、视觉重心一致。</li>
+                <li>轮廓由圆、圆角矩形、圆弧带、多边形等基本形状组合而成，需要挖空的位置（播放三角、房子门洞）使用<b>反向路径</b>，依靠非零环绕规则形成镂空。</li>
+                <li>同一份轮廓数据导出两条路径：一条转换为二次贝塞尔曲线后打包成 <code>ttf / woff</code> 字体；一条保留为 <code>path d</code> 直接放进 <code>&lt;symbol&gt;</code>。</li>
+                <li>字体图标文件、CSS 与 SVG 全部存放在本地 <code>font</code> 目录与页面内联代码中，<b>不依赖任何在线 CDN</b>。</li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

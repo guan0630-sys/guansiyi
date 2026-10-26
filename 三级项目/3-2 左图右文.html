@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="三级项目 网页元素设计：元素二 左图右文，网易云音乐榜单卡片">
+    <title>元素二 左图右文 · 网易云音乐榜单</title>
+    <!--
+        姓名：关斯译
+        学号：24001010318
+        班级：计算机24003班
+        日期：2026-10-25
+        功能名称：三级项目 —— 网页元素设计（元素二：左图右文）。
+                  以网易云音乐首页「榜单」为原型，左侧为 100×100 榜单封面，
+                  右侧为榜单名称与播放/收藏按钮，下方为 Top10 歌曲列表（序号 + 歌名），
+                  使用 Flex 完成"左图右文"结构，纯静态显示效果，不含任何交互与动画。
+    -->
+    <link rel="stylesheet" href="font/css/all.min.css">
+    <style>
+        /* ==================== 全局公共样式 ==================== */
+        :root {
+            --guan_red: #c20c0c;
+            --guan_dark: #242424;
+            --guan_text: #333;
+            --guan_sub: #8a8a8a;
+            --guan_line: #e1e1e1;
+            --guan_bg: #f5f5f5;
+            --guan_panel: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            color: var(--guan_text);
+            background: var(--guan_bg);
+            font: 14px/1.7 Arial, "Microsoft YaHei", sans-serif;
+        }
+
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            border: 0;
+        }
+
+        /* ==================== 页面骨架 ==================== */
+        .guan_header {
+            color: #ccc;
+            background: var(--guan_dark);
+        }
+
+        .guan_header_inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 52px;
+        }
+
+        .guan_logo {
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .guan_logo i {
+            margin-right: 6px;
+            color: var(--guan_red);
+        }
+
+        .guan_nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .guan_nav_link {
+            padding: 5px 12px;
+            border-radius: 4px;
+            color: #bdbdbd;
+            font-size: 13px;
+        }
+
+        .guan_nav_link:hover {
+            color: #fff;
+            background: #333;
+        }
+
+        .guan_nav_link--on {
+            color: #fff;
+            background: var(--guan_red);
+        }
+
+        .guan_page {
+            max-width: 960px;
+            margin: 26px auto 40px;
+            padding: 0 20px;
+        }
+
+        .guan_tip {
+            margin-bottom: 14px;
+            padding: 10px 14px;
+            border-left: 3px solid var(--guan_red);
+            color: var(--guan_sub);
+            background: #fff;
+            font-size: 13px;
+        }
+
+        .guan_tip b {
+            color: var(--guan_text);
+        }
+
+        .guan_panel {
+            padding: 22px 20px 26px;
+            background: var(--guan_panel);
+            border: 1px solid var(--guan_line);
+        }
+
+        .guan_section_hd {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--guan_red);
+        }
+
+        .guan_section_title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+        .guan_section_title::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: var(--guan_red);
+            border-radius: 50%;
+        }
+
+        .guan_more {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .guan_more i {
+            color: var(--guan_red);
+            font-size: 11px;
+        }
+
+        /* ==================== 元素二：左图右文 ==================== */
+        .guan_billgrid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+            margin-top: 20px;
+        }
+
+        .guan_bill {
+            border: 1px solid var(--guan_line);
+            background: #fff;
+        }
+
+        /* 左图右文主体：左封面 + 右信息 */
+        .guan_bill_top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px;
+        }
+
+        .guan_bill_cover {
+            flex: 0 0 100px;
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border: 1px solid #e6e6e6;
+            box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.12);
+        }
+
+        .guan_bill_cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .guan_bill_info {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .guan_bill_name {
+            font-size: 17px;
+            font-weight: normal;
+            line-height: 1.4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .guan_bill_desc {
+            margin-top: 2px;
+            color: var(--guan_sub);
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .guan_bill_btns {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .guan_iconbtn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border: 1px solid #dcdcdc;
+            border-radius: 50%;
+            color: #666;
+            font-size: 10px;
+            background: #fff;
+        }
+
+        .guan_songlist {
+            border-top: 1px solid var(--guan_line);
+        }
+
+        .guan_song {
+            display: flex;
+            align-items: center;
+            height: 32px;
+            padding: 0 10px;
+            font-size: 12px;
+        }
+
+        .guan_song:nth-child(odd) {
+            background: #f7f7f7;
+        }
+
+        .guan_song_num {
+            flex: 0 0 28px;
+            color: #999;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .guan_song_num--top {
+            color: var(--guan_red);
+        }
+
+        .guan_song_name {
+            min-width: 0;
+            flex: 1 1 auto;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .guan_bill_all {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 2px;
+            height: 32px;
+            padding: 0 12px;
+            border-top: 1px solid var(--guan_line);
+            color: #666;
+            font-size: 12px;
+        }
+
+        .guan_bill_all i {
+            color: var(--guan_red);
+            font-size: 11px;
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 780px) {
+            .guan_billgrid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="guan_header">
+        <div class="guan_header_inner">
+            <p class="guan_logo"><i class="fa-solid fa-music"></i>网易云音乐 · 网页元素设计</p>
+            <nav class="guan_nav">
+                <a class="guan_nav_link" href="3-1 上图下文.html">元素一 上图下文</a>
+                <a class="guan_nav_link guan_nav_link--on" href="3-2 左图右文.html">元素二 左图右文</a>
+                <a class="guan_nav_link" href="3-3 列表.html">元素三 列表</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="guan_page">
+        <p class="guan_tip">
+            <b>元素二 · 左图右文</b>：左侧为榜单封面，右侧为榜单名称、更新说明与播放按钮，两侧用 Flex
+            横向对齐；下方承接 Top10 歌曲列表。原型为网易云音乐首页「榜单」区块。
+        </p>
+
+        <section class="guan_panel">
+            <div class="guan_section_hd">
+                <h1 class="guan_section_title">榜单</h1>
+                <a class="guan_more" href="#">更多<i class="fa-solid fa-angle-right"></i></a>
+            </div>
+
+            <div class="guan_billgrid">
+                <article class="guan_bill">
+                    <header class="guan_bill_top">
+                        <div class="guan_bill_cover">
+                            <img src="img/bill_0.jpg" alt="飙升榜封面">
+                        </div>
+                        <div class="guan_bill_info">
+                            <h2 class="guan_bill_name">飙升榜</h2>
+                            <p class="guan_bill_desc">每天更新 · 实时热度</p>
+                            <div class="guan_bill_btns">
+                                <a class="guan_iconbtn" href="#" title="播放"><i class="fa-solid fa-play"></i></a>
+                                <a class="guan_iconbtn" href="#" title="收藏"><i class="fa-solid fa-plus"></i></a>
+                            </div>
+                        </div>
+                    </header>
+                    <ol class="guan_songlist">
+                        <li class="guan_song"><span class="guan_song_num guan_song_num--top">1</span><a class="guan_song_name" href="#">一张相片</a></li>
+                        <li class="guan_song"><span class="guan_song_num guan_song_num--top">2</span><a class="guan_song_name" href="#">双</a></li>
+                        <li class="guan_song"><span class="guan_song_num guan_song_num--top">3</span><a class="guan_song_name" href="#">†TAKEDISKRUSH!†（嘉豪进行曲）</a></li>
+                        <li class="guan_song"><span class="guan_song_num">4</span><a class="guan_song_name" href="#">大理出奇迹</a></li>
+                        <li class="guan_song"><span class="guan_song_num">5</span><a class="guan_song_name" href="#">全息恋人</a></li>
+                        <li class="guan_song"><span class="guan_song_num">6</span><a class="guan_song_name" href="#">撒哈拉的暴雨</a></li>
+                        <li class="guan_song"><span class="guan_song_num">7</span><a class="guan_song_name" href="#">王子系变装</a></li>
+                        <li class="guan_song"><span class="guan_song_num">8</span><a class="guan_song_name" href="#">Gangsta Don't Lie</a></li>
+                        <li class="guan_song"><span class="guan_song_num">9</span><a class="guan_song_name" href="#">燕子飞</a></li>
+                        <li class="guan_song"><span class="guan_song_num">10</span><a class="guan_song_name" href="#">Undefined</a></li>
+                    </ol>
+                    <a class="guan_bill_all" href="#">查看全部<i class="fa-solid fa-angle-right"></i></a>
+                </article>
+
+                <article class="guan_bill">
+                    <header class="guan_bill_top">
+                        <div class="guan_bill_cover">
+                            <img src="img/bill_1.jpg" alt="新歌榜封面">
+                        </div>
+                        <div class="guan_bill_info">
+                            <h2 class="guan_bill_name">新歌榜</h2>
+                            <p class="guan_bill_desc">每天更新 · 新歌速递</p>
+                            <div class="guan_bill_btns">
+                                <a class="guan_iconbtn" href="#" title="播放"><i class="fa-solid fa-play"></i></a>
+                                <a class="guan_iconbtn" href="#" title="收藏"><i class="fa-solid fa-plus"></i></a>
+                            </div>
+                        </div>
+                    </header>
+                    <ol class="guan_songlist">
+                        <li class="guan_song"><span class="guan_song_num guan_song_num--top">1</span><a class="guan_song_name" href="#">宝船</a></li>
+                        <li class="guan_song"><span class="guan_song_num guan_song_num--top">2</span><a class="guan_song_name" href="#">睡前别想太多</a></li>
+                        <li class="guan_song"><span class="guan_song_num guan_song_num--top">3</span><a class="guan_song_name" href="#">一张相片</a></li>
+                        <li class="guan_song"><span class="guan_song_num">4</span><a class="guan_song_name" href="#">双</a></li>
+                        <li class="guan_song"><span class="guan_song_num">5</span><a class="guan_song_name" href="#">自由的你</a></li>
+                        <li class="guan_song"><span class="guan_song_num">6</span><a class="guan_song_name" href="#">Undefined</a></li>
+                        <li class="guan_song"><span class="guan_song_num">7</span><a class="guan_song_name" href="#">撒哈拉的暴雨</a></li>
+                        <li class="guan_song"><span class="guan_song_num">8</span><a class="guan_song_name" href="#">大理出奇迹</a></li>
+                        <li class="guan_song"><span class="guan_song_num">9</span><a class="guan_song_name" href="#">Gangsta Don't Lie</a></li>
+                        <li class="guan_song"><span class="guan_song_num">10</span><a class="guan_song_name" href="#">FIRESTARTER</a></li>
+                    </ol>
+                    <a class="guan_bill_all" href="#">查看全部<i class="fa-solid fa-angle-right"></i></a>
+                </article>
+
+                <article class="guan_bill">
+                    <header class="guan_bill_top">
+                        <div class="guan_bill_cover">
+                            <img src="img/bill_2.jpg" alt="原创榜封面">
+                        </div>
+                        <div class="guan_bill_info">
+                            <h2 class="guan_bill_name">原创榜</h2>
+                            <p class="guan_bill_desc">每周更新 · 原创音乐</p>
+                            <div class="guan_bill_btns">
+                                <a class="guan_iconbtn" href="#" title="播放"><i class="fa-solid fa-play"></i></a>
+                                <a class="guan_iconbtn" href="#" title="收藏"><i class="fa-solid fa-plus"></i></a>
+                            </div>
+                        </div>
+                    </header>
+                    <ol class="guan_songlist">
+                        <li class="guan_song"><span class="guan_song_num guan_song_num--top">1</span><a class="guan_song_name" href="#">宝船</a></li>
+                        <li class="guan_song"><span class="guan_song_num guan_song_num--top">2</span><a class="guan_song_name" href="#">维他命D Vitamin D (feat.马思唯)</a></li>
+                        <li class="guan_song"><span class="guan_song_num guan_song_num--top">3</span><a class="guan_song_name" href="#">天还是阴</a></li>
+                        <li class="guan_song"><span class="guan_song_num">4</span><a class="guan_song_name" href="#">我允许你伤害我</a></li>
+                        <li class="guan_song"><span class="guan_song_num">5</span><a class="guan_song_name" href="#">何必相逢</a></li>
+                        <li class="guan_song"><span class="guan_song_num">6</span><a class="guan_song_name" href="#">茉茉</a></li>
+                        <li class="guan_song"><span class="guan_song_num">7</span><a class="guan_song_name" href="#">Deeper</a></li>
+                        <li class="guan_song"><span class="guan_song_num">8</span><a class="guan_song_name" href="#">看完花火再回</a></li>
+                        <li class="guan_song"><span class="guan_song_num">9</span><a class="guan_song_name" href="#">FIRESTARTER</a></li>
+                        <li class="guan_song"><span class="guan_song_num">10</span><a class="guan_song_name" href="#">何处山海万象生</a></li>
+                    </ol>
+                    <a class="guan_bill_all" href="#">查看全部<i class="fa-solid fa-angle-right"></i></a>
+                </article>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

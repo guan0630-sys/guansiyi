@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="四级项目 图像解决方案：字体图标实现网易云音乐下导航，自适应宽度">
+    <title>4-1 字体图标下导航 · 网易云音乐</title>
+    <!--
+        姓名：关斯译
+        学号：24001010318
+        班级：计算机24003班
+        日期：2026-10-25
+        功能名称：四级项目 —— 图像解决方案（方案一：字体图标）。
+                  使用自绘并导出的 iconfont 字体文件 font/guan_iconfont.ttf 完成三级项目
+                  网易云音乐的下导航，导航项用 flex: 1 1 0 均分宽度实现自适应，
+                  图标大小由 font-size 控制、颜色由 color 控制，纯静态、无任何交互与动画。
+    -->
+    <link rel="stylesheet" href="font/guan_iconfont.css">
+    <style>
+        /* ==================== 全局公共样式 ==================== */
+        :root {
+            --guan_red: #c20c0c;
+            --guan_dark: #242424;
+            --guan_text: #333;
+            --guan_sub: #8a8a8a;
+            --guan_line: #e1e1e1;
+            --guan_bg: #f5f5f5;
+            --guan_panel: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            color: var(--guan_text);
+            background: var(--guan_bg);
+            font: 14px/1.7 Arial, "Microsoft YaHei", sans-serif;
+        }
+
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            border: 0;
+        }
+
+        /* ==================== 页面骨架 ==================== */
+        .guan_header {
+            color: #ccc;
+            background: var(--guan_dark);
+        }
+
+        .guan_header_inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 52px;
+        }
+
+        .guan_logo {
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .guan_logo i {
+            margin-right: 6px;
+            color: var(--guan_red);
+        }
+
+        .guan_nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .guan_nav_link {
+            padding: 5px 12px;
+            border-radius: 4px;
+            color: #bdbdbd;
+            font-size: 13px;
+        }
+
+        .guan_nav_link:hover {
+            color: #fff;
+            background: #333;
+        }
+
+        .guan_nav_link--on {
+            color: #fff;
+            background: var(--guan_red);
+        }
+
+        .guan_page {
+            max-width: 960px;
+            margin: 26px auto 40px;
+            padding: 0 20px;
+        }
+
+        .guan_tip {
+            margin-bottom: 18px;
+            padding: 10px 14px;
+            border-left: 3px solid var(--guan_red);
+            color: var(--guan_sub);
+            background: #fff;
+            font-size: 13px;
+        }
+
+        .guan_tip b {
+            color: var(--guan_text);
+        }
+
+        .guan_block {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--guan_panel);
+            border: 1px solid var(--guan_line);
+        }
+
+        .guan_block_title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            font-size: 16px;
+            font-weight: normal;
+        }
+
+        .guan_block_title::before {
+            content: "";
+            width: 4px;
+            height: 15px;
+            background: var(--guan_red);
+        }
+
+        .guan_block_desc {
+            color: var(--guan_sub);
+            font-size: 13px;
+        }
+
+        /* ==================== 手机整屏演示 ==================== */
+        .guan_phone {
+            width: 375px;
+            max-width: 100%;
+            height: 620px;
+            margin: 18px auto 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #dcdcdc;
+            border-radius: 22px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .guan_phone_hd {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 14px;
+            color: #fff;
+            background: var(--guan_dark);
+        }
+
+        .guan_phone_hd i {
+            font-size: 18px;
+            color: var(--guan_red);
+        }
+
+        .guan_phone_hd strong {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .guan_phone_search {
+            flex: 1 1 auto;
+            margin-left: 4px;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border-radius: 20px;
+            color: #9a9a9a;
+            background: #3a3a3a;
+            font-size: 12px;
+        }
+
+        .guan_phone_search i {
+            font-size: 12px;
+            color: #9a9a9a;
+        }
+
+        .guan_phone_body {
+            flex: 1 1 auto;
+            overflow: hidden;
+            padding: 14px;
+        }
+
+        .guan_phone_title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--guan_line);
+            font-size: 15px;
+        }
+
+        .guan_phone_title span {
+            color: var(--guan_sub);
+            font-size: 12px;
+        }
+
+        .guan_albumlist {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px 10px;
+            margin-top: 12px;
+        }
+
+        .guan_album_cover {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .guan_album_name {
+            margin-top: 5px;
+            font-size: 11px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        .guan_phone_rank {
+            margin-top: 16px;
+        }
+
+        .guan_rank_row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--guan_line);
+        }
+
+        .guan_rank_row:last-child {
+            border-bottom: 0;
+        }
+
+        .guan_rank_no {
+            flex: 0 0 16px;
+            color: var(--guan_sub);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .guan_rank_no--top {
+            color: var(--guan_red);
+        }
+
+        .guan_rank_name {
+            flex: 1 1 auto;
+            min-width: 0;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ==================== 下导航（字体图标方案） ==================== */
+        .guan_tabbar {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            border-top: 1px solid var(--guan_line);
+            background: #fbfbfb;
+        }
+
+        .guan_tab {
+            /* 关键：flex-grow 1 / flex-shrink 1 / flex-basis 0，5 项在任何宽度下严格均分 */
+            flex: 1 1 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 7px 2px 6px;
+            color: var(--guan_sub);
+            font-size: 11px;
+            line-height: 1.2;
+        }
+
+        .guan_tab_icon {
+            /* 图标大小由 font-size 决定，颜色由 color（currentColor）决定 */
+            font-size: 24px;
+            transition: none;
+        }
+
+        .guan_tab_txt {
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .guan_tab--on {
+            color: var(--guan_red);
+        }
+
+        /* ==================== 不同宽度下的自适应演示 ==================== */
+        .guan_widths {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+            margin-top: 16px;
+        }
+
+        .guan_width_item {
+            max-width: 100%;
+        }
+
+        .guan_width_label {
+            margin-bottom: 6px;
+            color: var(--guan_sub);
+            font-size: 12px;
+        }
+
+        .guan_width_label b {
+            color: var(--guan_red);
+        }
+
+        .guan_w320 {
+            width: 320px;
+        }
+
+        .guan_w414 {
+            width: 414px;
+        }
+
+        .guan_w768 {
+            width: 768px;
+        }
+
+        .guan_width_frame {
+            max-width: 100%;
+            border: 1px solid var(--guan_line);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fbfbfb;
+        }
+
+        /* ==================== 大小与颜色演示 ==================== */
+        .guan_colorbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 22px;
+            margin-top: 14px;
+        }
+
+        .guan_color_item {
+            text-align: center;
+        }
+
+        .guan_color_item i {
+            display: block;
+        }
+
+        .guan_color_size16 {
+            font-size: 16px;
+        }
+
+        .guan_color_size20 {
+            font-size: 20px;
+        }
+
+        .guan_color_size24 {
+            font-size: 24px;
+        }
+
+        .guan_color_size32 {
+            font-size: 32px;
+        }
+
+        .guan_color_size48 {
+            font-size: 48px;
+        }
+
+        .guan_color_c1 {
+            color: #333;
+        }
+
+        .guan_color_c2 {
+            color: #8a8a8a;
+        }
+
+        .guan_color_c3 {
+            color: var(--guan_red);
+        }
+
+        .guan_color_c4 {
+            color: #2a7fff;
+        }
+
+        .guan_color_c5 {
+            color: #f0a020;
+        }
+
+        .guan_color_name {
+            margin-top: 6px;
+            color: var(--guan_sub);
+            font-size: 12px;
+        }
+
+        /* ==================== 要点说明 ==================== */
+        .guan_points {
+            margin-top: 10px;
+            padding-left: 18px;
+            color: #555;
+            font-size: 13px;
+            list-style: disc;
+        }
+
+        .guan_points li {
+            margin-top: 6px;
+        }
+
+        .guan_points code {
+            padding: 1px 4px;
+            border-radius: 3px;
+            color: var(--guan_red);
+            background: #f6f6f6;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 780px) {
+            .guan_page {
+                padding: 0 12px;
+            }
+
+            .guan_block {
+                padding: 14px;
+            }
+
+            .guan_phone {
+                height: 640px;
+            }
+
+            .guan_w768 {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="guan_header">
+        <div class="guan_header_inner">
+            <p class="guan_logo"><i class="guan_icon guan_icon_music"></i>网易云音乐 · 图像解决方案</p>
+            <nav class="guan_nav">
+                <a class="guan_nav_link guan_nav_link--on" href="4-1 字体图标下导航.html">方案一 字体图标</a>
+                <a class="guan_nav_link" href="4-2 SVG下导航.html">方案二 SVG</a>
+                <a class="guan_nav_link" href="4-3 图标总览.html">图标总览</a>
+                <a class="guan_nav_link" href="index.html">项目首页</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="guan_page">
+        <p class="guan_tip">
+            <b>方案一 · 字体图标</b>：把图标当作“文字”来用。图标轮廓打包进字体文件
+            <code>font/guan_iconfont.ttf</code>，页面通过 <code>@font-face</code> 引入后，
+            用 <code>::before</code> 的 <code>content</code> 输出私有区字符，
+            因此<b>改字号就是改图标大小、改文字颜色就是改图标颜色</b>。导航用 <code>flex: 1 1 0</code> 均分宽度，自适应 320px~1440px。
+        </p>
+
+        <section class="guan_block">
+            <h1 class="guan_block_title">网易云音乐 · 下导航（字体图标）</h1>
+            <p class="guan_block_desc">375 × 720 手机整屏效果，下导航固定贴在屏幕底部，5 个导航项等宽均分。</p>
+
+            <div class="guan_phone">
+                <div class="guan_phone_hd">
+                    <i class="guan_icon guan_icon_music"></i>
+                    <strong>发现</strong>
+                    <span class="guan_phone_search"><i class="guan_icon guan_icon_search"></i>搜索音乐、歌手、歌单</span>
+                </div>
+
+                <div class="guan_phone_body">
+                    <div class="guan_phone_title">推荐歌单<span>更多 <i class="guan_icon guan_icon_play"></i></span></div>
+                    <ul class="guan_albumlist">
+                        <li>
+                            <img class="guan_album_cover" src="img/cover_0.jpg" alt="【民谣】民谣是毒也是药 歌单封面">
+                            <p class="guan_album_name">【民谣】民谣是毒也是药</p>
+                        </li>
+                        <li>
+                            <img class="guan_album_cover" src="img/cover_1.jpg" alt="「华语」温柔治愈 歌单封面">
+                            <p class="guan_album_name">「华语」温柔治愈的宝藏歌单</p>
+                        </li>
+                        <li>
+                            <img class="guan_album_cover" src="img/cover_2.jpg" alt="深夜电台 歌单封面">
+                            <p class="guan_album_name">深夜电台 · 一个人的晚安曲</p>
+                        </li>
+                    </ul>
+
+                    <div class="guan_phone_rank">
+                        <div class="guan_phone_title">飙升榜<span>全部 <i class="guan_icon guan_icon_play"></i></span></div>
+                        <ul>
+                            <li class="guan_rank_row">
+                                <span class="guan_rank_no guan_rank_no--top">1</span>
+                                <span class="guan_rank_name">若把你比作歌</span>
+                                <i class="guan_icon guan_icon_play"></i>
+                            </li>
+                            <li class="guan_rank_row">
+                                <span class="guan_rank_no guan_rank_no--top">2</span>
+                                <span class="guan_rank_name">花海（女声版）</span>
+                                <i class="guan_icon guan_icon_play"></i>
+                            </li>
+                            <li class="guan_rank_row">
+                                <span class="guan_rank_no guan_rank_no--top">3</span>
+                                <span class="guan_rank_name">晚风心里吹</span>
+                                <i class="guan_icon guan_icon_play"></i>
+                            </li>
+                            <li class="guan_rank_row">
+                                <span class="guan_rank_no">4</span>
+                                <span class="guan_rank_name">云烟成雨</span>
+                                <i class="guan_icon guan_icon_play"></i>
+                            </li>
+                            <li class="guan_rank_row">
+                                <span class="guan_rank_no">5</span>
+                                <span class="guan_rank_name">海底（治愈版）</span>
+                                <i class="guan_icon guan_icon_play"></i>
+                            </li>
+                            <li class="guan_rank_row">
+                                <span class="guan_rank_no">6</span>
+                                <span class="guan_rank_name">这世界那么多人</span>
+                                <i class="guan_icon guan_icon_play"></i>
+                            </li>
+                            <li class="guan_rank_row">
+                                <span class="guan_rank_no">7</span>
+                                <span class="guan_rank_name">晴天（吉他版）</span>
+                                <i class="guan_icon guan_icon_play"></i>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 下导航：字体图标方案 -->
+                <nav class="guan_tabbar" aria-label="网易云音乐下导航">
+                    <a class="guan_tab guan_tab--on" href="#">
+                        <i class="guan_icon guan_icon_compass guan_tab_icon"></i>
+                        <span class="guan_tab_txt">发现</span>
+                    </a>
+                    <a class="guan_tab" href="#">
+                        <i class="guan_icon guan_icon_mic guan_tab_icon"></i>
+                        <span class="guan_tab_txt">播客</span>
+                    </a>
+                    <a class="guan_tab" href="#">
+                        <i class="guan_icon guan_icon_cloud guan_tab_icon"></i>
+                        <span class="guan_tab_txt">云村</span>
+                    </a>
+                    <a class="guan_tab" href="#">
+                        <i class="guan_icon guan_icon_heart guan_tab_icon"></i>
+                        <span class="guan_tab_txt">关注</span>
+                    </a>
+                    <a class="guan_tab" href="#">
+                        <i class="guan_icon guan_icon_user guan_tab_icon"></i>
+                        <span class="guan_tab_txt">我的</span>
+                    </a>
+                </nav>
+            </div>
+        </section>
+
+        <section class="guan_block">
+            <h2 class="guan_block_title">自适应宽度验证</h2>
+            <p class="guan_block_desc">同一条下导航放到 320px、414px、768px 三种宽度下，导航项始终等宽均分，文字不换行、不溢出。</p>
+
+            <div class="guan_widths">
+                <div class="guan_width_item">
+                    <p class="guan_width_label"><b>320px</b> 小屏手机 · 单项 64px</p>
+                    <div class="guan_width_frame guan_w320">
+                        <nav class="guan_tabbar" aria-label="320px 下导航">
+                            <a class="guan_tab guan_tab--on" href="#">
+                                <i class="guan_icon guan_icon_compass guan_tab_icon"></i>
+                                <span class="guan_tab_txt">发现</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_mic guan_tab_icon"></i>
+                                <span class="guan_tab_txt">播客</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_cloud guan_tab_icon"></i>
+                                <span class="guan_tab_txt">云村</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_heart guan_tab_icon"></i>
+                                <span class="guan_tab_txt">关注</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_user guan_tab_icon"></i>
+                                <span class="guan_tab_txt">我的</span>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="guan_width_item">
+                    <p class="guan_width_label"><b>414px</b> 大屏手机 · 单项 82.8px</p>
+                    <div class="guan_width_frame guan_w414">
+                        <nav class="guan_tabbar" aria-label="414px 下导航">
+                            <a class="guan_tab guan_tab--on" href="#">
+                                <i class="guan_icon guan_icon_compass guan_tab_icon"></i>
+                                <span class="guan_tab_txt">发现</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_mic guan_tab_icon"></i>
+                                <span class="guan_tab_txt">播客</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_cloud guan_tab_icon"></i>
+                                <span class="guan_tab_txt">云村</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_heart guan_tab_icon"></i>
+                                <span class="guan_tab_txt">关注</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_user guan_tab_icon"></i>
+                                <span class="guan_tab_txt">我的</span>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="guan_width_item">
+                    <p class="guan_width_label"><b>768px</b> 平板 · 单项 153.6px</p>
+                    <div class="guan_width_frame guan_w768">
+                        <nav class="guan_tabbar" aria-label="768px 下导航">
+                            <a class="guan_tab guan_tab--on" href="#">
+                                <i class="guan_icon guan_icon_compass guan_tab_icon"></i>
+                                <span class="guan_tab_txt">发现</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_mic guan_tab_icon"></i>
+                                <span class="guan_tab_txt">播客</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_cloud guan_tab_icon"></i>
+                                <span class="guan_tab_txt">云村</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_heart guan_tab_icon"></i>
+                                <span class="guan_tab_txt">关注</span>
+                            </a>
+                            <a class="guan_tab" href="#">
+                                <i class="guan_icon guan_icon_user guan_tab_icon"></i>
+                                <span class="guan_tab_txt">我的</span>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="guan_block">
+            <h2 class="guan_block_title">字体图标的大小与颜色</h2>
+            <p class="guan_block_desc">字形本身只有一个轮廓，尺寸和颜色全部交给 CSS：<code>font-size</code> 控制大小，<code>color</code> 控制颜色，不需要准备多套图片。</p>
+
+            <div class="guan_colorbar">
+                <div class="guan_color_item">
+                    <i class="guan_icon guan_icon_compass guan_color_size16 guan_color_c1"></i>
+                    <p class="guan_color_name">16px</p>
+                </div>
+                <div class="guan_color_item">
+                    <i class="guan_icon guan_icon_compass guan_color_size20 guan_color_c1"></i>
+                    <p class="guan_color_name">20px</p>
+                </div>
+                <div class="guan_color_item">
+                    <i class="guan_icon guan_icon_compass guan_color_size24 guan_color_c1"></i>
+                    <p class="guan_color_name">24px</p>
+                </div>
+                <div class="guan_color_item">
+                    <i class="guan_icon guan_icon_compass guan_color_size32 guan_color_c1"></i>
+                    <p class="guan_color_name">32px</p>
+                </div>
+                <div class="guan_color_item">
+                    <i class="guan_icon guan_icon_compass guan_color_size48 guan_color_c1"></i>
+                    <p class="guan_color_name">48px</p>
+                </div>
+            </div>
+
+            <div class="guan_colorbar">
+                <div class="guan_color_item">
+                    <i class="guan_icon guan_icon_compass guan_color_size32 guan_color_c1"></i>
+                    <p class="guan_color_name">#333333</p>
+                </div>
+                <div class="guan_color_item">
+                    <i class="guan_icon guan_icon_compass guan_color_size32 guan_color_c2"></i>
+                    <p class="guan_color_name">#8A8A8A</p>
+                </div>
+                <div class="guan_color_item">
+                    <i class="guan_icon guan_icon_compass guan_color_size32 guan_color_c3"></i>
+                    <p class="guan_color_name">#C20C0C</p>
+                </div>
+                <div class="guan_color_item">
+                    <i class="guan_icon guan_icon_compass guan_color_size32 guan_color_c4"></i>
+                    <p class="guan_color_name">#2A7FFF</p>
+                </div>
+                <div class="guan_color_item">
+                    <i class="guan_icon guan_icon_compass guan_color_size32 guan_color_c5"></i>
+                    <p class="guan_color_name">#F0A020</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="guan_block">
+            <h2 class="guan_block_title">核心代码要点</h2>
+            <ul class="guan_points">
+                <li><code>@font-face</code> 声明 <code>guan_iconfont</code>，优先加载体积更小的 <code>woff</code>，失败时回退 <code>ttf</code>，文件均放在本地 <code>font</code> 目录，不引用在线字体。</li>
+                <li><code>.guan_icon</code> 统一设置 <code>font-family</code>、<code>line-height: 1</code>、<code>font-synthesis: none</code>，保证图标不会被合成加粗而变形。</li>
+                <li>每个图标用 <code>::before { content: "\e00x" }</code> 输出私有区字符，HTML 里只写一个 <code>&lt;i&gt;</code> 标签。</li>
+                <li><code>.guan_tab { flex: 1 1 0 }</code> 让 5 个导航项在任何视口下都严格等分，配合 <code>min-width: 0</code> 与文字省略，窄屏也不会把导航撑破。</li>
+                <li>图标颜色直接继承 <code>color</code>：未选中 <code>#8A8A8A</code>，选中态加 <code>.guan_tab--on</code> 变品牌红 <code>#C20C0C</code>。</li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

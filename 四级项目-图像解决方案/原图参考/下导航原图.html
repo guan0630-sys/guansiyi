@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网易云音乐下导航 · 参考原图</title>
+    <!--
+        姓名：关斯译
+        学号：24001010318
+        班级：计算机24003班
+        日期：2026-10-25
+        功能名称：原图参考页（仅用于报告对比）。
+                  本地环境无法直接截取网易云音乐 App 界面，此页按 App 下导航的布局、
+                  间距与配色 1:1 还原为参考图，图标用细线风格（与原图一致），
+                  用于与 4-1 / 4-2 页的实心图标实现图做对比。
+    -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            padding: 24px;
+            color: #333;
+            background: #ececec;
+            font: 14px/1.6 Arial, "Microsoft YaHei", sans-serif;
+        }
+
+        .guan_ref_phone {
+            width: 375px;
+            height: 700px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .guan_ref_hd {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 14px;
+            color: #fff;
+            background: #242424;
+            font-size: 14px;
+        }
+
+        .guan_ref_hd span {
+            flex: 1 1 auto;
+            padding: 5px 12px;
+            border-radius: 18px;
+            color: #9a9a9a;
+            background: #3a3a3a;
+            font-size: 12px;
+        }
+
+        .guan_ref_body {
+            flex: 1 1 auto;
+            overflow: hidden;
+            padding: 14px;
+        }
+
+        .guan_ref_title {
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e1e1e1;
+            font-size: 15px;
+        }
+
+        .guan_ref_list {
+            margin-top: 10px;
+            list-style: none;
+        }
+
+        .guan_ref_row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 0;
+            border-bottom: 1px dashed #e1e1e1;
+            font-size: 13px;
+        }
+
+        .guan_ref_no {
+            flex: 0 0 18px;
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .guan_ref_no--top {
+            color: #c20c0c;
+        }
+
+        .guan_ref_name {
+            flex: 1 1 auto;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 下导航：细线图标，灰色未选中 / 红色选中 */
+        .guan_ref_tabbar {
+            display: flex;
+            border-top: 1px solid #e5e5e5;
+            background: #fbfbfb;
+        }
+
+        .guan_ref_tab {
+            flex: 1 1 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 8px 2px 7px;
+            color: #8a8a8a;
+            font-size: 11px;
+        }
+
+        .guan_ref_tab--on {
+            color: #c20c0c;
+        }
+
+        .guan_ref_icon {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    </style>
+</head>
+<body>
+    <div class="guan_ref_phone">
+        <div class="guan_ref_hd">发现<span>搜索音乐、歌手、歌单</span></div>
+
+        <div class="guan_ref_body">
+            <p class="guan_ref_title">飙升榜</p>
+            <ul class="guan_ref_list">
+                <li class="guan_ref_row"><span class="guan_ref_no guan_ref_no--top">1</span><span class="guan_ref_name">若把你比作歌</span></li>
+                <li class="guan_ref_row"><span class="guan_ref_no guan_ref_no--top">2</span><span class="guan_ref_name">花海（女声版）</span></li>
+                <li class="guan_ref_row"><span class="guan_ref_no guan_ref_no--top">3</span><span class="guan_ref_name">晚风心里吹</span></li>
+                <li class="guan_ref_row"><span class="guan_ref_no">4</span><span class="guan_ref_name">云烟成雨</span></li>
+                <li class="guan_ref_row"><span class="guan_ref_no">5</span><span class="guan_ref_name">海底（治愈版）</span></li>
+                <li class="guan_ref_row"><span class="guan_ref_no">6</span><span class="guan_ref_name">这世界那么多人</span></li>
+                <li class="guan_ref_row"><span class="guan_ref_no">7</span><span class="guan_ref_name">晴天（吉他版）</span></li>
+                <li class="guan_ref_row"><span class="guan_ref_no">8</span><span class="guan_ref_name">玫瑰少年</span></li>
+            </ul>
+        </div>
+
+        <nav class="guan_ref_tabbar">
+            <a class="guan_ref_tab guan_ref_tab--on" href="#">
+                <svg class="guan_ref_icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.6 8.4l-2.2 5.2-5.2 2.2 2.2-5.2z"/></svg>
+                发现
+            </a>
+            <a class="guan_ref_tab" href="#">
+                <svg class="guan_ref_icon" viewBox="0 0 24 24"><rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3.5"/><path d="M8.5 21.5h7"/></svg>
+                播客
+            </a>
+            <a class="guan_ref_tab" href="#">
+                <svg class="guan_ref_icon" viewBox="0 0 24 24"><path d="M6.5 18.5a4.5 4.5 0 0 1 0-9 6 6 0 0 1 11.6-1.6 4 4 0 0 1-.6 10.6z"/></svg>
+                云村
+            </a>
+            <a class="guan_ref_tab" href="#">
+                <svg class="guan_ref_icon" viewBox="0 0 24 24"><path d="M12 20.2S4.5 15.6 4.5 10.4A4.4 4.4 0 0 1 12 7.2a4.4 4.4 0 0 1 7.5 3.2c0 5.2-7.5 9.8-7.5 9.8z"/></svg>
+                关注
+            </a>
+            <a class="guan_ref_tab" href="#">
+                <svg class="guan_ref_icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>
+                我的
+            </a>
+        </nav>
+    </div>
+</body>
+</html>

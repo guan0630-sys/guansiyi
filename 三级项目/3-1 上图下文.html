@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="三级项目 网页元素设计：元素一 上图下文，网易云音乐热门推荐歌单卡片">
+    <title>元素一 上图下文 · 网易云音乐热门推荐</title>
+    <!--
+        姓名：关斯译
+        学号：24001010318
+        班级：计算机24003班
+        日期：2026-10-25
+        功能名称：三级项目 —— 网页元素设计（元素一：上图下文）。
+                  以网易云音乐「热门推荐」歌单卡片为原型，使用 CSS Grid 完成四列卡片布局，
+                  每张卡片上方为正方形封面（含播放量覆盖条），下方为两行文字标题，
+                  纯静态显示效果，不含任何交互与动画。
+    -->
+    <link rel="stylesheet" href="font/css/all.min.css">
+    <style>
+        /* ==================== 全局公共样式 ==================== */
+        :root {
+            --guan_red: #c20c0c;
+            --guan_dark: #242424;
+            --guan_text: #333;
+            --guan_sub: #8a8a8a;
+            --guan_line: #e1e1e1;
+            --guan_bg: #f5f5f5;
+            --guan_panel: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            color: var(--guan_text);
+            background: var(--guan_bg);
+            font: 14px/1.7 Arial, "Microsoft YaHei", sans-serif;
+        }
+
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            border: 0;
+        }
+
+        /* ==================== 页面骨架 ==================== */
+        .guan_header {
+            color: #ccc;
+            background: var(--guan_dark);
+        }
+
+        .guan_header_inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 52px;
+        }
+
+        .guan_logo {
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .guan_logo i {
+            margin-right: 6px;
+            color: var(--guan_red);
+        }
+
+        .guan_nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .guan_nav_link {
+            padding: 5px 12px;
+            border-radius: 4px;
+            color: #bdbdbd;
+            font-size: 13px;
+        }
+
+        .guan_nav_link:hover {
+            color: #fff;
+            background: #333;
+        }
+
+        .guan_nav_link--on {
+            color: #fff;
+            background: var(--guan_red);
+        }
+
+        .guan_page {
+            max-width: 960px;
+            margin: 26px auto 40px;
+            padding: 0 20px;
+        }
+
+        .guan_tip {
+            margin-bottom: 14px;
+            padding: 10px 14px;
+            border-left: 3px solid var(--guan_red);
+            color: var(--guan_sub);
+            background: #fff;
+            font-size: 13px;
+        }
+
+        .guan_tip b {
+            color: var(--guan_text);
+        }
+
+        /* ==================== 元素一：上图下文卡片 ==================== */
+        .guan_panel {
+            padding: 22px 20px 26px;
+            background: var(--guan_panel);
+            border: 1px solid var(--guan_line);
+        }
+
+        .guan_section_hd {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--guan_red);
+        }
+
+        .guan_section_title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+        .guan_section_title::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: var(--guan_red);
+            border-radius: 50%;
+        }
+
+        .guan_section_title i {
+            color: var(--guan_red);
+            font-size: 16px;
+        }
+
+        .guan_tags {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--guan_sub);
+            font-size: 12px;
+        }
+
+        .guan_tags span {
+            color: #d0d0d0;
+        }
+
+        .guan_more {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .guan_more i {
+            color: var(--guan_red);
+            font-size: 11px;
+        }
+
+        /* 卡片网格：四列等宽，上图下文 */
+        .guan_cardlist {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px 18px;
+            margin-top: 18px;
+        }
+
+        .guan_card_cover {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: #eee;
+        }
+
+        .guan_card_cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .guan_card_bar {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 24px;
+            padding: 0 6px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.55);
+            font-size: 11px;
+        }
+
+        .guan_card_play {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .guan_card_btn {
+            font-size: 15px;
+        }
+
+        .guan_card_title {
+            margin-top: 7px;
+            font-size: 12px;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 780px) {
+            .guan_cardlist {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px 12px;
+            }
+
+            .guan_section_hd {
+                flex-wrap: wrap;
+            }
+
+            .guan_more {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .guan_cardlist {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 页面导航：三个元素各自独立成页，此处仅做页面之间的跳转 -->
+    <header class="guan_header">
+        <div class="guan_header_inner">
+            <p class="guan_logo"><i class="fa-solid fa-music"></i>网易云音乐 · 网页元素设计</p>
+            <nav class="guan_nav">
+                <a class="guan_nav_link guan_nav_link--on" href="3-1 上图下文.html">元素一 上图下文</a>
+                <a class="guan_nav_link" href="3-2 左图右文.html">元素二 左图右文</a>
+                <a class="guan_nav_link" href="3-3 列表.html">元素三 列表</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="guan_page">
+        <p class="guan_tip">
+            <b>元素一 · 上图下文</b>：封面在上、标题在下，四列等宽网格。
+            原型为网易云音乐首页「热门推荐」歌单卡片，使用 Grid + 绝对定位覆盖条实现。
+        </p>
+
+        <section class="guan_panel">
+            <div class="guan_section_hd">
+                <h1 class="guan_section_title"><i class="fa-solid fa-compact-disc"></i>热门推荐</h1>
+                <ul class="guan_tags">
+                    <li>华语</li><li><span>|</span></li>
+                    <li>流行</li><li><span>|</span></li>
+                    <li>摇滚</li><li><span>|</span></li>
+                    <li>民谣</li><li><span>|</span></li>
+                    <li>电子</li>
+                </ul>
+                <a class="guan_more" href="#">更多<i class="fa-solid fa-angle-right"></i></a>
+            </div>
+
+            <ul class="guan_cardlist">
+                <li class="guan_card">
+                    <a class="guan_card_link" href="#">
+                        <div class="guan_card_cover">
+                            <img src="img/cover_0.jpg" alt="【民谣】民谣是毒也是药 歌单封面">
+                            <div class="guan_card_bar">
+                                <span class="guan_card_play"><i class="fa-solid fa-headset"></i>3680万</span>
+                                <i class="fa-regular fa-circle-play guan_card_btn"></i>
+                            </div>
+                        </div>
+                        <p class="guan_card_title">【民谣】民谣是毒也是药</p>
+                    </a>
+                </li>
+                <li class="guan_card">
+                    <a class="guan_card_link" href="#">
+                        <div class="guan_card_cover">
+                            <img src="img/cover_1.jpg" alt="我爱你 第一句是假的 第二句也是假的 歌单封面">
+                            <div class="guan_card_bar">
+                                <span class="guan_card_play"><i class="fa-solid fa-headset"></i>2740万</span>
+                                <i class="fa-regular fa-circle-play guan_card_btn"></i>
+                            </div>
+                        </div>
+                        <p class="guan_card_title">我爱你 第一句是假的 第二句也是假的</p>
+                    </a>
+                </li>
+                <li class="guan_card">
+                    <a class="guan_card_link" href="#">
+                        <div class="guan_card_cover">
+                            <img src="img/cover_2.jpg" alt="「日语民谣」月色中的浅吟低唱 歌单封面">
+                            <div class="guan_card_bar">
+                                <span class="guan_card_play"><i class="fa-solid fa-headset"></i>2481万</span>
+                                <i class="fa-regular fa-circle-play guan_card_btn"></i>
+                            </div>
+                        </div>
+                        <p class="guan_card_title">「日语民谣」月色中的浅吟低唱</p>
+                    </a>
+                </li>
+                <li class="guan_card">
+                    <a class="guan_card_link" href="#">
+                        <div class="guan_card_cover">
+                            <img src="img/cover_3.jpg" alt="EP01.对谈章子晗 播客封面">
+                            <div class="guan_card_bar">
+                                <span class="guan_card_play"><i class="fa-solid fa-headset"></i>5.4万</span>
+                                <i class="fa-regular fa-circle-play guan_card_btn"></i>
+                            </div>
+                        </div>
+                        <p class="guan_card_title">EP01.对谈章子晗：AAAD的起步与迭代——长板、机会公式与重要性判断</p>
+                    </a>
+                </li>
+                <li class="guan_card">
+                    <a class="guan_card_link" href="#">
+                        <div class="guan_card_cover">
+                            <img src="img/cover_4.jpg" alt="成长篇 认识到自己的平凡 歌单封面">
+                            <div class="guan_card_bar">
+                                <span class="guan_card_play"><i class="fa-solid fa-headset"></i>3403万</span>
+                                <i class="fa-regular fa-circle-play guan_card_btn"></i>
+                            </div>
+                        </div>
+                        <p class="guan_card_title">成长篇 | 认识到自己的平凡，并且接受</p>
+                    </a>
+                </li>
+                <li class="guan_card">
+                    <a class="guan_card_link" href="#">
+                        <div class="guan_card_cover">
+                            <img src="img/cover_5.jpg" alt="Vol.076 为什么忠诚度在上升 播客封面">
+                            <div class="guan_card_bar">
+                                <span class="guan_card_play"><i class="fa-solid fa-headset"></i>5970</span>
+                                <i class="fa-regular fa-circle-play guan_card_btn"></i>
+                            </div>
+                        </div>
+                        <p class="guan_card_title">Vol.076 为什么忠诚度在上升，恋爱体验在下降｜直播精选</p>
+                    </a>
+                </li>
+                <li class="guan_card">
+                    <a class="guan_card_link" href="#">
+                        <div class="guan_card_cover">
+                            <img src="img/cover_6.jpg" alt="[声线] 空灵女声 歌单封面">
+                            <div class="guan_card_bar">
+                                <span class="guan_card_play"><i class="fa-solid fa-headset"></i>2642万</span>
+                                <i class="fa-regular fa-circle-play guan_card_btn"></i>
+                            </div>
+                        </div>
+                        <p class="guan_card_title">[声线] 空 灵 女 声</p>
+                    </a>
+                </li>
+                <li class="guan_card">
+                    <a class="guan_card_link" href="#">
+                        <div class="guan_card_cover">
+                            <img src="img/cover_7.jpg" alt="沈天泽Vol.3 播客封面">
+                            <div class="guan_card_bar">
+                                <span class="guan_card_play"><i class="fa-solid fa-headset"></i>17万</span>
+                                <i class="fa-regular fa-circle-play guan_card_btn"></i>
+                            </div>
+                        </div>
+                        <p class="guan_card_title">沈天泽Vol.3</p>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>
