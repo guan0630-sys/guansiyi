@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 程序结构：条件与循环</title>
+    <!--
+        姓名：关斯译
+        建立时间：2026-10-26
+        使用的大模型：GLM-5.3-Flash
+        功能名称：展示JavaScript程序结构——顺序、条件（if/else、switch）、循环（for、while、do-while）
+    -->
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+        .guan_wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            padding: 30px 40px;
+        }
+        .guan_title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .guan_subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+        .guan_card {
+            border-left: 5px solid #3498db;
+            background: #fafafa;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .guan_card2 { border-left-color: #e67e22; }
+        .guan_card3 { border-left-color: #2ecc71; }
+        .guan_card4 { border-left-color: #9b59b6; }
+        .guan_type {
+            font-size: 1.15em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .guan_desc {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .guan_code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-family: Consolas, monospace;
+            font-size: 0.9em;
+            margin-top: 10px;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .guan_result {
+            margin-top: 10px;
+            padding: 8px 14px;
+            background: #eaf2fb;
+            border-radius: 6px;
+            font-size: 0.95em;
+        }
+        .guan_result strong { color: #2980b9; }
+        .guan_table {
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .guan_table td {
+            border: 1px solid #d0d7de;
+            padding: 3px 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="guan_wrapper">
+        <h1 class="guan_title">JavaScript 程序结构演示</h1>
+        <p class="guan_subtitle">顺序结构 / 条件结构（if-else、switch）/ 循环结构（for、while、do-while）</p>
+
+        <div class="guan_card">
+            <div class="guan_type">一、顺序结构</div>
+            <div class="guan_desc">程序从上到下逐条执行</div>
+            <div class="guan_code">var guan_a = 10;
+var guan_b = 3;
+var guan_sum = guan_a + guan_b;   // 13</div>
+            <div class="guan_result" id="guan_r1"></div>
+        </div>
+
+        <div class="guan_card guan_card2">
+            <div class="guan_type">二、条件结构（if / else）</div>
+            <div class="guan_desc">根据条件成立与否执行不同分支</div>
+            <div class="guan_code">var guan_score = 85;
+if (guan_score >= 90) { guan_grade = "优秀"; }
+else if (guan_score >= 80) { guan_grade = "良好"; }
+else if (guan_score >= 60) { guan_grade = "及格"; }
+else { guan_grade = "不及格"; }</div>
+            <div class="guan_result" id="guan_r2"></div>
+        </div>
+
+        <div class="guan_card guan_card3">
+            <div class="guan_type">三、条件结构（switch）</div>
+            <div class="guan_desc">多分支匹配，比连续 if-else 更清晰</div>
+            <div class="guan_code">var guan_day = 3;
+switch (guan_day) {
+    case 1: guan_name = "星期一"; break;
+    case 3: guan_name = "星期三"; break;
+    default: guan_name = "其他";
+}</div>
+            <div class="guan_result" id="guan_r3"></div>
+        </div>
+
+        <div class="guan_card guan_card4">
+            <div class="guan_type">四、循环结构（for / while / do-while）</div>
+            <div class="guan_desc">for 求 1~100 累加和；while 求 5 的阶乘；do-while 至少执行一次</div>
+            <div class="guan_code">var guan_total = 0;
+for (var guan_i = 1; guan_i <= 100; guan_i++) { guan_total += guan_i; }
+
+var guan_fact = 1, guan_n = 5;
+while (guan_n > 1) { guan_fact *= guan_n; guan_n--; }
+
+var guan_k = 1;
+do { guan_k++; } while (guan_k <= 5);</div>
+            <div class="guan_result" id="guan_r4"></div>
+        </div>
+
+        <div class="guan_card">
+            <div class="guan_type">五、循环嵌套：九九乘法表</div>
+            <div class="guan_desc">外层 for 控制行，内层 for 控制列</div>
+            <div id="guan_r5"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== 一、顺序结构 =====
+        var guan_a = 10, guan_b = 3;
+        var guan_sum = guan_a + guan_b;
+        document.getElementById("guan_r1").innerHTML =
+            "a = " + guan_a + "，b = " + guan_b + "，a + b = <strong>" + guan_sum + "</strong>";
+
+        // ===== 二、if / else 条件结构 =====
+        var guan_score = 85, guan_grade;
+        if (guan_score >= 90) { guan_grade = "优秀"; }
+        else if (guan_score >= 80) { guan_grade = "良好"; }
+        else if (guan_score >= 60) { guan_grade = "及格"; }
+        else { guan_grade = "不及格"; }
+        document.getElementById("guan_r2").innerHTML =
+            "分数 " + guan_score + " 的等级是：<strong>" + guan_grade + "</strong>";
+
+        // ===== 三、switch 条件结构 =====
+        var guan_day = 3, guan_name;
+        switch (guan_day) {
+            case 1: guan_name = "星期一"; break;
+            case 2: guan_name = "星期二"; break;
+            case 3: guan_name = "星期三"; break;
+            case 4: guan_name = "星期四"; break;
+            case 5: guan_name = "星期五"; break;
+            default: guan_name = "周末";
+        }
+        document.getElementById("guan_r3").innerHTML =
+            "guan_day = " + guan_day + "，对应：<strong>" + guan_name + "</strong>";
+
+        // ===== 四、循环结构 =====
+        var guan_total = 0;
+        for (var guan_i = 1; guan_i <= 100; guan_i++) { guan_total += guan_i; }
+
+        var guan_fact = 1, guan_n = 5;
+        while (guan_n > 1) { guan_fact *= guan_n; guan_n--; }
+
+        var guan_k = 1, guan_doCount = 0;
+        do { guan_doCount++; guan_k++; } while (guan_k <= 5);
+
+        document.getElementById("guan_r4").innerHTML =
+            "for：1~100 累加和 = <strong>" + guan_total + "</strong>；" +
+            "while：5! = <strong>" + guan_fact + "</strong>；" +
+            "do-while：循环执行 <strong>" + guan_doCount + "</strong> 次";
+
+        // ===== 五、循环嵌套：九九乘法表 =====
+        var guan_html = '<table class="guan_table">';
+        for (var guan_row = 1; guan_row <= 9; guan_row++) {
+            guan_html += "<tr>";
+            for (var guan_col = 1; guan_col <= guan_row; guan_col++) {
+                guan_html += "<td>" + guan_col + "×" + guan_row + "=" + (guan_col * guan_row) + "</td>";
+            }
+            guan_html += "</tr>";
+        }
+        guan_html += "</table>";
+        document.getElementById("guan_r5").innerHTML = guan_html;
+
+        console.log("程序结构演示执行完毕");
+    </script>
+</body>
+</html>

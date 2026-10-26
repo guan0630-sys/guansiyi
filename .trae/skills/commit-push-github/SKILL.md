@@ -8,7 +8,8 @@ description: Commit and push the whole project to the GitHub remote guan0630-sys
 提交并推送整个项目到 GitHub 仓库（SSH 方式，公钥已配置）。
 
 - 仓库主页：https://github.com/guan0630-sys/guansiyi
-- SSH 地址：git@github.com:guan0630-sys/guansiyi.git
+- SSH 地址（443 端口，已验证可用）：ssh://git@ssh.github.com:443/guan0630-sys/guansiyi.git
+- 备用 SSH 地址（22 端口，本机网络已屏蔽）：git@github.com:guan0630-sys/guansiyi.git
 
 ## 步骤
 
