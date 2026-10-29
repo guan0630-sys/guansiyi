@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 数组方法实验室</title>
+    <!--
+        姓名：关斯译
+        建立时间：2026-10-29
+        使用的大模型：DeepSeek-V4.1-Flash
+        功能名称：可视化演示 JavaScript 数组的主要方法——增删改（push/pop/unshift/shift/splice/sort/reverse/fill）、
+                  返回新数组（slice/concat/map/filter/join）、查询（indexOf/lastIndexOf/includes/find/findIndex/at/length）、
+                  聚合（forEach/reduce/some/every），可交互观察原数组是否被改变
+    -->
+    <style>
+        * { box-sizing: border-box; }
+        :root {
+            --guan_ink: #182a3a;
+            --guan_muted: #6d8090;
+            --guan_paper: #f4efe6;
+            --guan_cream: #fffdf8;
+            --guan_coral: #e66f51;
+            --guan_teal: #2d8c89;
+            --guan_yellow: #f3c969;
+            --guan_line: rgba(24, 42, 58, .13);
+            --guan_shadow: 0 14px 34px rgba(30, 48, 60, .10);
+        }
+        body {
+            margin: 0;
+            padding: 34px 18px 70px;
+            color: var(--guan_ink);
+            background: var(--guan_paper);
+            font-family: Georgia, "Microsoft YaHei", serif;
+        }
+        .guan_page { max-width: 1060px; margin: 0 auto; }
+
+        /* ===== 头部 ===== */
+        .guan_header {
+            position: relative;
+            overflow: hidden;
+            padding: 36px clamp(22px, 4vw, 46px);
+            background: var(--guan_cream);
+            border: 1px solid var(--guan_line);
+            box-shadow: var(--guan_shadow);
+        }
+        .guan_header::after {
+            content: "";
+            position: absolute;
+            width: 230px;
+            height: 230px;
+            right: -80px;
+            top: -100px;
+            border-radius: 50%;
+            background: var(--guan_yellow);
+            opacity: .6;
+        }
+        .guan_eyebrow {
+            position: relative;
+            margin: 0;
+            color: var(--guan_coral);
+            font: bold 12px/1.6 "Microsoft YaHei", sans-serif;
+            letter-spacing: .22em;
+        }
+        .guan_header h1 {
+            position: relative;
+            margin: 14px 0 12px;
+            font-size: clamp(30px, 4.4vw, 46px);
+            letter-spacing: -.02em;
+            line-height: 1.15;
+        }
+        .guan_lead {
+            position: relative;
+            max-width: 640px;
+            margin: 0;
+            color: var(--guan_muted);
+            font: 15px/1.9 "Microsoft YaHei", sans-serif;
+        }
+        .guan_meta {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            align-items: center;
+            margin: 22px 0 0;
+            font: 13px "Microsoft YaHei", sans-serif;
+            color: var(--guan_muted);
+            letter-spacing: .06em;
+        }
+        .guan_meta a { color: var(--guan_coral); text-decoration: none; border-bottom: 1px dashed var(--guan_coral); }
+
+        /* ===== 面板 ===== */
+        .guan_panel {
+            margin-top: 26px;
+            padding: 26px clamp(18px, 3.4vw, 34px) 30px;
+            background: var(--guan_cream);
+            border: 1px solid var(--guan_line);
+            box-shadow: var(--guan_shadow);
+        }
+        .guan_panel_head {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+        .guan_panel_head h2 { margin: 0; font-size: 22px; letter-spacing: -.01em; }
+        .guan_panel_head p { margin: 0; color: var(--guan_muted); font: 13px/1.7 "Microsoft YaHei", sans-serif; }
+
+        /* ===== 数组舞台 ===== */
+        .guan_stage {
+            padding: 18px 18px 16px;
+            background: #f8f3ea;
+            border: 1px dashed var(--guan_line);
+            border-radius: 8px;
+        }
+        .guan_stage_label {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            font: 12px "Microsoft YaHei", sans-serif;
+            letter-spacing: .1em;
+            color: var(--guan_muted);
+        }
+        .guan_stage_label b { color: var(--guan_ink); font-family: Consolas, monospace; }
+        .guan_track {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 84px;
+            align-items: flex-start;
+        }
+        .guan_cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            animation: guan_drop .32s ease both;
+        }
+        .guan_box {
+            display: grid;
+            place-items: center;
+            width: 62px;
+            height: 56px;
+            border-radius: 8px;
+            border: 1px solid rgba(24, 42, 58, .18);
+            background: #fff;
+            font: bold 18px/1 Consolas, monospace;
+            color: var(--guan_ink);
+            box-shadow: 0 3px 0 rgba(24, 42, 58, .08);
+            transition: transform .2s ease, background .2s ease, color .2s ease;
+        }
+        .guan_cell_hl .guan_box {
+            background: var(--guan_coral);
+            border-color: var(--guan_coral);
+            color: #fff;
+            transform: translateY(-6px) scale(1.06);
+        }
+        .guan_idx { font: 11px/1 Consolas, monospace; color: var(--guan_muted); }
+        .guan_empty { color: var(--guan_muted); font: 13px "Microsoft YaHei", sans-serif; }
+        @keyframes guan_drop {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .guan_arrows {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 26px;
+            justify-content: space-between;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--guan_line);
+            font: 12px "Microsoft YaHei", sans-serif;
+            color: var(--guan_muted);
+        }
+        .guan_arrows code { font-family: Consolas, monospace; color: var(--guan_teal); }
+
+        /* ===== 按钮区 ===== */
+        .guan_group { margin-top: 20px; }
+        .guan_group_title {
+            margin-bottom: 8px;
+            font: bold 12px/1.6 "Microsoft YaHei", sans-serif;
+            letter-spacing: .12em;
+            color: var(--guan_muted);
+        }
+        .guan_btns { display: flex; flex-wrap: wrap; gap: 8px; }
+        .guan_btn {
+            padding: 7px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--guan_line);
+            background: #fff;
+            color: var(--guan_ink);
+            font: 13px/1.4 Consolas, monospace;
+            cursor: pointer;
+            transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease;
+        }
+        .guan_btn:hover { transform: translateY(-2px); }
+        .guan_btn_mut { background: var(--guan_ink); border-color: var(--guan_ink); color: #fff; }
+        .guan_btn_mut:hover { color: var(--guan_yellow); }
+        .guan_btn_new { color: var(--guan_teal); border-color: rgba(45, 140, 137, .55); }
+        .guan_btn_new:hover { background: var(--guan_teal); border-color: var(--guan_teal); color: #fff; }
+        .guan_btn_query { background: #fffdf3; color: #8a6d1f; border-color: rgba(211, 168, 62, .75); }
+        .guan_btn_query:hover { background: var(--guan_yellow); border-color: var(--guan_yellow); color: var(--guan_ink); }
+        .guan_btn_calc { color: #6b58a6; border-color: rgba(107, 88, 166, .5); }
+        .guan_btn_calc:hover { background: #6b58a6; border-color: #6b58a6; color: #fff; }
+        .guan_btn_reset {
+            background: transparent;
+            border: 1px dashed var(--guan_coral);
+            color: var(--guan_coral);
+        }
+        .guan_btn_reset:hover { background: var(--guan_coral); color: #fff; }
+
+        /* ===== 读数区 ===== */
+        .guan_readout { display: grid; gap: 10px; margin-top: 22px; }
+        .guan_line {
+            display: grid;
+            grid-template-columns: 84px 1fr;
+            gap: 12px;
+            align-items: center;
+            padding: 10px 14px;
+            background: #f8f3ea;
+            border-radius: 6px;
+        }
+        .guan_line_label {
+            font: 12px "Microsoft YaHei", sans-serif;
+            color: var(--guan_muted);
+            letter-spacing: .08em;
+        }
+        .guan_line code { font: 14px/1.6 Consolas, monospace; color: var(--guan_ink); word-break: break-all; }
+        .guan_ret { font: bold 15px/1.6 Consolas, monospace; color: var(--guan_teal); word-break: break-all; }
+        .guan_state { font: 13px/1.6 "Microsoft YaHei", sans-serif; }
+        .guan_state_mut { color: var(--guan_coral); }
+        .guan_state_keep { color: var(--guan_muted); }
+
+        .guan_retbox {
+            display: none;
+            margin-top: 14px;
+            padding: 14px 16px;
+            background: #eef5f4;
+            border: 1px solid rgba(45, 140, 137, .25);
+            border-radius: 6px;
+        }
+        .guan_retbox .guan_stage_label { margin-bottom: 10px; }
+        .guan_retbox .guan_track { min-height: 0; }
+        .guan_retbox .guan_box {
+            width: 52px;
+            height: 46px;
+            font-size: 15px;
+            background: var(--guan_cream);
+            border-color: rgba(45, 140, 137, .32);
+        }
+
+        /* ===== 操作日志 ===== */
+        .guan_log {
+            display: grid;
+            gap: 6px;
+            max-height: 178px;
+            margin-top: 16px;
+            overflow: auto;
+        }
+        .guan_log_item {
+            display: grid;
+            grid-template-columns: minmax(140px, 1fr) 1.4fr;
+            gap: 10px;
+            padding: 6px 10px;
+            border-left: 3px solid var(--guan_line);
+            background: #faf7f1;
+            font: 12px/1.7 Consolas, monospace;
+            color: var(--guan_muted);
+        }
+        .guan_log_item b { color: var(--guan_ink); font-weight: normal; }
+
+        /* ===== 对照表 ===== */
+        .guan_table_wrap { max-height: 470px; overflow: auto; margin-top: 4px; }
+        .guan_table {
+            width: 100%;
+            border-collapse: collapse;
+            font: 13px/1.7 "Microsoft YaHei", sans-serif;
+        }
+        .guan_table th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            padding: 9px 10px;
+            text-align: left;
+            background: var(--guan_cream);
+            border-bottom: 2px solid var(--guan_ink);
+            color: var(--guan_ink);
+            font-size: 12px;
+            letter-spacing: .08em;
+        }
+        .guan_table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--guan_line);
+            vertical-align: top;
+        }
+        .guan_table tr:hover td { background: #faf6ee; }
+        .guan_table code { font-family: Consolas, monospace; font-size: 12.5px; color: var(--guan_coral); }
+        .guan_table .guan_demo { font-family: Consolas, monospace; color: var(--guan_teal); }
+        .guan_cat { font-size: 12px; color: var(--guan_muted); white-space: nowrap; }
+        .guan_tag_yes { color: var(--guan_coral); font-weight: bold; }
+        .guan_tag_no { color: var(--guan_muted); }
+
+        /* ===== 比喻卡片 ===== */
+        .guan_tips {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        .guan_tip {
+            padding: 18px 20px;
+            background: #faf6ee;
+            border: 1px solid var(--guan_line);
+            border-radius: 8px;
+            border-top: 4px solid var(--guan_teal);
+        }
+        .guan_tip:nth-child(2) { border-top-color: var(--guan_coral); }
+        .guan_tip:nth-child(3) { border-top-color: var(--guan_yellow); }
+        .guan_tip:nth-child(4) { border-top-color: #6b58a6; }
+        .guan_tip h3 { margin: 0 0 8px; font-size: 16px; }
+        .guan_tip p { margin: 0; color: var(--guan_muted); font: 13px/1.85 "Microsoft YaHei", sans-serif; }
+        .guan_tip code { font-family: Consolas, monospace; color: var(--guan_coral); }
+
+        footer.guan_footer {
+            margin-top: 34px;
+            padding-top: 16px;
+            border-top: 1px solid var(--guan_line);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            color: var(--guan_muted);
+            font: 12px "Microsoft YaHei", sans-serif;
+        }
+        footer.guan_footer a { color: var(--guan_coral); text-decoration: none; }
+
+        @media (max-width: 720px) {
+            body { padding: 20px 12px 50px; }
+            .guan_tips { grid-template-columns: 1fr; }
+            .guan_line { grid-template-columns: 1fr; gap: 4px; }
+            .guan_box { width: 54px; height: 50px; font-size: 16px; }
+            .guan_log_item { grid-template-columns: 1fr; gap: 2px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="guan_page">
+        <header class="guan_header">
+            <p class="guan_eyebrow">LESSON 16 / JAVASCRIPT ARRAY</p>
+            <h1>数组方法实验室</h1>
+            <p class="guan_lead">
+                把一个数组想成一排编了号的盒子：盒子里装着数据，脚下标着索引。
+                点一点下面的按钮，看看哪些方法会直接改动这排盒子，哪些方法只是复印一份、另起一排。
+            </p>
+            <p class="guan_meta">
+                <span>关斯译 · 24001010318 · 计算机24003班</span>
+                <a href="index.html">← 返回作品索引</a>
+            </p>
+        </header>
+
+        <!-- ===== 一、交互实验台 ===== -->
+        <section class="guan_panel">
+            <div class="guan_panel_head">
+                <h2>一、动手实验：点按钮看变化</h2>
+                <p>当前初始数组：<code>var arr = [12, 5, 8, 21, 3]</code></p>
+            </div>
+
+            <div class="guan_stage">
+                <div class="guan_stage_label">
+                    <span>当前数组 arr</span>
+                    <span>length = <b id="guan_len">5</b></span>
+                </div>
+                <div class="guan_track" id="guan_track"></div>
+                <div class="guan_arrows">
+                    <span>队首方向：<code>unshift</code> 插入 / <code>shift</code> 删除</span>
+                    <span>队尾方向：<code>push</code> 插入 / <code>pop</code> 删除</span>
+                </div>
+            </div>
+
+            <div class="guan_group">
+                <div class="guan_group_title">① 增删改 · 直接改变原数组</div>
+                <div class="guan_btns" data-guan-group="mut"></div>
+            </div>
+            <div class="guan_group">
+                <div class="guan_group_title">② 转换 · 返回一个新数组，原数组不动</div>
+                <div class="guan_btns" data-guan-group="new"></div>
+            </div>
+            <div class="guan_group">
+                <div class="guan_group_title">③ 查询 · 找位置、找元素</div>
+                <div class="guan_btns" data-guan-group="query"></div>
+            </div>
+            <div class="guan_group">
+                <div class="guan_group_title">④ 遍历与聚合 · 把一排盒子算成一个结果</div>
+                <div class="guan_btns" data-guan-group="calc"></div>
+            </div>
+            <div class="guan_group">
+                <div class="guan_btns">
+                    <button type="button" class="guan_btn guan_btn_reset" id="guan_reset">重置数组</button>
+                </div>
+            </div>
+
+            <div class="guan_readout">
+                <div class="guan_line">
+                    <span class="guan_line_label">执行代码</span>
+                    <code id="guan_code">var arr = [12, 5, 8, 21, 3]</code>
+                </div>
+                <div class="guan_line">
+                    <span class="guan_line_label">返回值</span>
+                    <span class="guan_ret" id="guan_ret">—</span>
+                </div>
+                <div class="guan_line">
+                    <span class="guan_line_label">数组状态</span>
+                    <span class="guan_state guan_state_keep" id="guan_state">等待操作…</span>
+                </div>
+            </div>
+
+            <div class="guan_retbox" id="guan_retbox">
+                <div class="guan_stage_label">
+                    <span>返回值（新数组）</span>
+                    <span>index 从 0 开始</span>
+                </div>
+                <div class="guan_track" id="guan_ret_track"></div>
+            </div>
+
+            <div class="guan_log" id="guan_log"></div>
+        </section>
+
+        <!-- ===== 二、方法对照表 ===== -->
+        <section class="guan_panel">
+            <div class="guan_panel_head">
+                <h2>二、方法对照表</h2>
+                <p>右边两列由 JavaScript 现场算出，不是写死的文字</p>
+            </div>
+            <div class="guan_table_wrap">
+                <table class="guan_table">
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>方法调用</th>
+                            <th>作用</th>
+                            <th>返回值（数组为 [12,5,8,21,3]）</th>
+                            <th>改变原数组</th>
+                        </tr>
+                    </thead>
+                    <tbody id="guan_tbody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ===== 三、形象比喻 ===== -->
+        <section class="guan_panel">
+            <div class="guan_panel_head">
+                <h2>三、四个比喻记住关键区别</h2>
+                <p>数组的盒子会“挪位置”，索引会跟着变</p>
+            </div>
+            <div class="guan_tips">
+                <div class="guan_tip">
+                    <h3>排队买奶茶：push / pop</h3>
+                    <p><code>push</code> 是新人站到队尾，<code>pop</code> 是队尾的人离开。
+                    只在末端操作，其他人的索引都不用变，最省事。</p>
+                </div>
+                <div class="guan_tip">
+                    <h3>有人插队：unshift / shift</h3>
+                    <p><code>unshift</code> 在队首插一个人，<code>shift</code> 让队首的人走掉。
+                    后面每个人的索引都要 +1 或 -1，所以比 push / pop 慢。</p>
+                </div>
+                <div class="guan_tip">
+                    <h3>复印还是剪贴：slice / splice</h3>
+                    <p><code>slice</code> 是“复印一段带走”，原数组一根头发都不少；
+                    <code>splice</code> 是“拿剪刀在原数组上剪掉或塞进一段”，原数组会变。</p>
+                </div>
+                <div class="guan_tip">
+                    <h3>流水线：map / filter / reduce</h3>
+                    <p><code>map</code> 给每个盒子贴一张新标签，<code>filter</code> 只留下合格的盒子，
+                    <code>reduce</code> 把所有盒子压成最后一个结果——三者都返回新值，不动原数组。</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="guan_footer">
+            <span>关斯译 · 高级网页设计 · 16-1 数组方法</span>
+            <a href="index.html">返回作品索引 →</a>
+        </footer>
+    </div>
+
+    <script>
+        /* ========== 基础数据 ========== */
+        var guan_base = [12, 5, 8, 21, 3];
+        var guan_arr = guan_base.slice();
+        var guan_limit = 10;
+
+        var guan_group_name = {
+            mut: "增删改",
+            "new": "转换",
+            query: "查询",
+            calc: "聚合"
+        };
+
+        /* ========== 方法清单：一个数据源同时驱动实验台与对照表 ========== */
+        var guan_catalog = [
+            /* ① 增删改：改变原数组 */
+            {
+                group: "mut", call: "push(9)", desc: "在末尾追加元素 9",
+                run: function (a) { return a.push(9); },
+                hl: function (a) { return a.length - 1; }
+            },
+            {
+                group: "mut", call: "pop()", desc: "删除并返回末尾元素",
+                run: function (a) { return a.pop(); }
+            },
+            {
+                group: "mut", call: "unshift(0)", desc: "在开头插入元素 0",
+                run: function (a) { return a.unshift(0); },
+                hl: function () { return 0; }
+            },
+            {
+                group: "mut", call: "shift()", desc: "删除并返回开头元素",
+                run: function (a) { return a.shift(); }
+            },
+            {
+                group: "mut", call: "splice(1,1)", desc: "从索引 1 开始删除 1 个元素",
+                run: function (a) { return a.splice(1, 1); }
+            },
+            {
+                group: "mut", call: "splice(2,0,'A')", desc: "在索引 2 处插入一个元素 A",
+                run: function (a) { return a.splice(2, 0, "A"); },
+                hl: function () { return 2; }
+            },
+            {
+                group: "mut", call: "sort((a,b)=>a-b)", desc: "按数值从小到大排序（默认按字符串排序）",
+                run: function (a) { return a.sort(function (x, y) { return x - y; }); }
+            },
+            {
+                group: "mut", call: "reverse()", desc: "把数组顺序整个反转",
+                run: function (a) { return a.reverse(); }
+            },
+            {
+                group: "mut", call: "fill(0,2,4)", desc: "把索引 2、3 的值都换成 0",
+                run: function (a) { return a.fill(0, 2, 4); }
+            },
+
+            /* ② 转换：返回新数组 */
+            {
+                group: "new", call: "slice(1,3)", desc: "截取索引 1~2（不含结束索引）",
+                run: function (a) { return a.slice(1, 3); }
+            },
+            {
+                group: "new", call: "concat([7,9])", desc: "拼上另一段，得到新数组",
+                run: function (a) { return a.concat([7, 9]); }
+            },
+            {
+                group: "new", call: "map(x=>x*2)", desc: "每个元素 ×2，生成等长新数组",
+                run: function (a) { return a.map(function (x) { return x * 2; }); }
+            },
+            {
+                group: "new", call: "filter(x=>x>5)", desc: "只保留大于 5 的元素",
+                run: function (a) { return a.filter(function (x) { return x > 5; }); }
+            },
+            {
+                group: "new", call: "join('-')", desc: "用连字符把元素拼成一个字符串",
+                run: function (a) { return a.join("-"); }
+            },
+
+            /* ③ 查询 */
+            {
+                group: "query", call: "indexOf(8)", desc: "8 第一次出现的索引，找不到返回 -1",
+                run: function (a) { return a.indexOf(8); },
+                hl: function (a, ret) { return ret; }
+            },
+            {
+                group: "query", call: "lastIndexOf(3)", desc: "从后往前找 3 的索引",
+                run: function (a) { return a.lastIndexOf(3); },
+                hl: function (a, ret) { return ret; }
+            },
+            {
+                group: "query", call: "includes(21)", desc: "判断是否包含 21，返回 true / false",
+                run: function (a) { return a.includes(21); }
+            },
+            {
+                group: "query", call: "find(x=>x>10)", desc: "找出第一个大于 10 的元素",
+                run: function (a) { return a.find(function (x) { return x > 10; }); },
+                hl: function (a, ret) { return a.indexOf(ret); }
+            },
+            {
+                group: "query", call: "findIndex(x=>x>10)", desc: "找出第一个大于 10 的元素索引",
+                run: function (a) { return a.findIndex(function (x) { return x > 10; }); },
+                hl: function (a, ret) { return ret; }
+            },
+            {
+                group: "query", call: "at(-1)", desc: "取最后一个元素（负数从末尾数）",
+                run: function (a) { return a.at(-1); },
+                hl: function (a) { return a.length - 1; }
+            },
+            {
+                group: "query", call: "length", desc: "数组长度，属性而不是方法",
+                run: function (a) { return a.length; }
+            },
+
+            /* ④ 遍历与聚合 */
+            {
+                group: "calc", call: "forEach(x=>...)", desc: "依次访问每个元素，没有返回值",
+                run: function (a) {
+                    var guan_seen = [];
+                    a.forEach(function (x) { guan_seen.push(x); });
+                    return undefined;
+                }
+            },
+            {
+                group: "calc", call: "reduce((s,x)=>s+x,0)", desc: "从 0 开始累加所有元素",
+                run: function (a) {
+                    return a.reduce(function (s, x) { return s + x; }, 0);
+                }
+            },
+            {
+                group: "calc", call: "some(x=>x>20)", desc: "是否至少有一个元素大于 20",
+                run: function (a) { return a.some(function (x) { return x > 20; }); }
+            },
+            {
+                group: "calc", call: "every(x=>x>0)", desc: "是否所有元素都大于 0",
+                run: function (a) { return a.every(function (x) { return x > 0; }); }
+            }
+        ];
+
+        /* ========== 工具函数 ========== */
+        function guan_fmt(v) {
+            if (Array.isArray(v)) {
+                if (!v.length) { return "[]"; }
+                return "[" + v.map(guan_fmt).join(", ") + "]";
+            }
+            if (typeof v === "string") { return v; }
+            if (v === undefined) { return "undefined"; }
+            return String(v);
+        }
+
+        function guan_isMutated(before, after) {
+            if (before.length !== after.length) { return true; }
+            for (var i = 0; i < before.length; i++) {
+                if (before[i] !== after[i]) { return true; }
+            }
+            return false;
+        }
+
+        function guan_renderTrack(container, arr, hl) {
+            container.innerHTML = "";
+            if (!arr.length) {
+                var tip = document.createElement("span");
+                tip.className = "guan_empty";
+                tip.textContent = "空数组 []";
+                container.appendChild(tip);
+                return;
+            }
+            arr.forEach(function (value, index) {
+                var cell = document.createElement("div");
+                cell.className = "guan_cell" + (index === hl ? " guan_cell_hl" : "");
+                cell.style.animationDelay = (index * 35) + "ms";
+
+                var box = document.createElement("div");
+                box.className = "guan_box";
+                box.textContent = value;
+
+                var idx = document.createElement("span");
+                idx.className = "guan_idx";
+                idx.textContent = index;
+
+                cell.appendChild(box);
+                cell.appendChild(idx);
+                container.appendChild(cell);
+            });
+        }
+
+        function guan_log(call, retText, mutated) {
+            var log = document.getElementById("guan_log");
+            var row = document.createElement("div");
+            row.className = "guan_log_item";
+
+            var name = document.createElement("b");
+            name.textContent = "arr." + call;
+
+            var value = document.createElement("span");
+            value.textContent = "→ " + retText + (mutated ? " ｜ 原数组已改变" : " ｜ 原数组未变");
+
+            row.appendChild(name);
+            row.appendChild(value);
+            log.insertBefore(row, log.firstChild);
+            while (log.children.length > 8) {
+                log.removeChild(log.lastChild);
+            }
+        }
+
+        /* ========== 执行一次方法调用 ========== */
+        function guan_exec(item) {
+            if (item.group === "mut" && guan_arr.length >= guan_limit &&
+                (item.call.indexOf("push") === 0 || item.call.indexOf("unshift") === 0)) {
+                guan_log(item.call, "数组已有 " + guan_arr.length + " 个元素，请先重置", false);
+                return;
+            }
+
+            var before = guan_arr.slice();
+            var ret;
+            try {
+                ret = item.run(guan_arr);
+            } catch (err) {
+                ret = "错误：" + err.message;
+            }
+
+            var mutated = guan_isMutated(before, guan_arr);
+            var hl = -1;
+            if (item.hl) {
+                hl = item.hl(guan_arr, ret);
+            }
+
+            document.getElementById("guan_code").textContent = "arr." + item.call;
+            document.getElementById("guan_ret").textContent = guan_fmt(ret);
+            document.getElementById("guan_len").textContent = guan_arr.length;
+
+            var state = document.getElementById("guan_state");
+            state.textContent = mutated ? "原数组被改变（原地操作）" : "原数组保持不变";
+            state.className = "guan_state " + (mutated ? "guan_state_mut" : "guan_state_keep");
+
+            guan_renderTrack(document.getElementById("guan_track"), guan_arr, hl);
+
+            var retbox = document.getElementById("guan_retbox");
+            if (Array.isArray(ret)) {
+                retbox.style.display = "block";
+                guan_renderTrack(document.getElementById("guan_ret_track"), ret, -1);
+            } else {
+                retbox.style.display = "none";
+            }
+
+            guan_log(item.call, guan_fmt(ret), mutated);
+        }
+
+        /* ========== 重置 ========== */
+        function guan_reset() {
+            guan_arr = guan_base.slice();
+            document.getElementById("guan_code").textContent = "var arr = [12, 5, 8, 21, 3]";
+            document.getElementById("guan_ret").textContent = "—";
+            document.getElementById("guan_len").textContent = guan_arr.length;
+
+            var state = document.getElementById("guan_state");
+            state.textContent = "等待操作…";
+            state.className = "guan_state guan_state_keep";
+
+            guan_renderTrack(document.getElementById("guan_track"), guan_arr, -1);
+            document.getElementById("guan_retbox").style.display = "none";
+            document.getElementById("guan_log").innerHTML = "";
+        }
+
+        /* ========== 生成工具栏按钮 ========== */
+        function guan_buildToolbar() {
+            var wraps = document.querySelectorAll("[data-guan-group]");
+            Array.prototype.forEach.call(wraps, function (wrap) {
+                var group = wrap.getAttribute("data-guan-group");
+                guan_catalog.forEach(function (item) {
+                    if (item.group !== group) { return; }
+                    var btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.className = "guan_btn guan_btn_" + group;
+                    btn.textContent = item.call;
+                    btn.addEventListener("click", function () { guan_exec(item); });
+                    wrap.appendChild(btn);
+                });
+            });
+        }
+
+        /* ========== 生成对照表 ========== */
+        function guan_buildTable() {
+            var tbody = document.getElementById("guan_tbody");
+
+            guan_catalog.forEach(function (item) {
+                var demoArr = guan_base.slice();
+                var ret;
+                try {
+                    ret = item.run(demoArr);
+                } catch (err) {
+                    ret = "—";
+                }
+                var mutated = guan_isMutated(guan_base, demoArr);
+
+                var tr = document.createElement("tr");
+
+                var tdCat = document.createElement("td");
+                tdCat.className = "guan_cat";
+                tdCat.textContent = guan_group_name[item.group];
+
+                var tdCall = document.createElement("td");
+                var code = document.createElement("code");
+                code.textContent = "arr." + item.call;
+                tdCall.appendChild(code);
+
+                var tdDesc = document.createElement("td");
+                tdDesc.textContent = item.desc;
+
+                var tdRet = document.createElement("td");
+                tdRet.className = "guan_demo";
+                tdRet.textContent = guan_fmt(ret);
+
+                var tdMut = document.createElement("td");
+                tdMut.className = mutated ? "guan_tag_yes" : "guan_tag_no";
+                tdMut.textContent = mutated ? "是" : "否";
+
+                tr.appendChild(tdCat);
+                tr.appendChild(tdCall);
+                tr.appendChild(tdDesc);
+                tr.appendChild(tdRet);
+                tr.appendChild(tdMut);
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* ========== 初始化 ========== */
+        guan_buildToolbar();
+        guan_buildTable();
+        guan_reset();
+        document.getElementById("guan_reset").addEventListener("click", guan_reset);
+    </script>
+</body>
+</html>

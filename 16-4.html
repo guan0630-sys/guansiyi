@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音乐手机 · 资讯 Tab 模块</title>
+    <!--
+        姓名：关斯译
+        建立时间：2026-10-29
+        使用的大模型：DeepSeek-V4.1-Flash
+        功能名称：仿照给定截图完成“音乐手机”资讯模块——标题 + 行情/导购/新品/评测 四个 Tab
+                  切换对应的新闻列表，列表含蓝色方块项目符号、蓝色标题链接、灰色日期
+    -->
+    <link rel="stylesheet" href="三级项目/font/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 30px 16px;
+            background: #fafafa;
+            font-family: "宋体", SimSun, serif;
+        }
+
+        /* ===== 外层模块 ===== */
+        .guan_module {
+            width: 372px;
+            padding: 8px 10px 10px;
+            background: #fff;
+            border: 1px solid #d8d8d8;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .07);
+        }
+
+        /* ===== 头部：标题 + Tab ===== */
+        .guan_head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 10px;
+            border-bottom: 1px solid #3d8ac6;
+        }
+        .guan_title {
+            margin: 0;
+            padding: 2px 0 7px 12px;
+            color: #111;
+            font-family: "Microsoft YaHei", "黑体", SimHei, sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: .5px;
+            white-space: nowrap;
+        }
+        .guan_tabs {
+            display: flex;
+            border: 1px solid #c9d4de;
+            border-bottom: none;
+            background: #fff;
+        }
+        .guan_tab {
+            width: 44px;
+            height: 26px;
+            padding: 0;
+            border: none;
+            border-left: 1px solid #c9d4de;
+            background: #fff;
+            color: #333;
+            font-family: "宋体", SimSun, serif;
+            font-size: 12px;
+            line-height: 26px;
+            text-align: center;
+            cursor: pointer;
+            transition: color .15s ease, background .15s ease;
+        }
+        .guan_tab:first-child { border-left: none; }
+        .guan_tab:hover { color: #1268b3; }
+        .guan_tab_active {
+            background: #e7f3fe;
+            color: #0d6cbf;
+            font-weight: 700;
+            box-shadow: inset 0 0 0 1px #a9cdea;
+        }
+        .guan_tab:focus-visible { outline: 2px solid #7fb6e6; outline-offset: -2px; }
+
+        /* ===== 新闻列表 ===== */
+        .guan_panel { display: none; }
+        .guan_panel_active { display: block; }
+        .guan_list {
+            margin: 6px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+        .guan_news {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            height: 25px;
+        }
+        .guan_bullet {
+            flex: none;
+            width: 6px;
+            font-size: 5px;
+            color: #2b7bc6;
+            text-align: center;
+        }
+        .guan_news_link {
+            flex: 1;
+            min-width: 0;
+            color: #1b6db8;
+            font-size: 13px;
+            line-height: 25px;
+            text-decoration: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .guan_news_link:hover { color: #e00000; text-decoration: underline; }
+        .guan_news_link:visited { color: #1b6db8; }
+        .guan_date {
+            flex: none;
+            color: #999;
+            font-size: 12px;
+            line-height: 25px;
+        }
+
+        @media (max-width: 400px) {
+            .guan_module { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <section class="guan_module" aria-label="音乐手机资讯">
+        <div class="guan_head">
+            <h2 class="guan_title">音乐手机</h2>
+            <div class="guan_tabs" role="tablist" aria-label="资讯分类">
+                <button type="button" class="guan_tab guan_tab_active" role="tab" id="guan_tab_0"
+                        aria-selected="true" aria-controls="guan_panel_0">行情</button>
+                <button type="button" class="guan_tab" role="tab" id="guan_tab_1"
+                        aria-selected="false" aria-controls="guan_panel_1" tabindex="-1">导购</button>
+                <button type="button" class="guan_tab" role="tab" id="guan_tab_2"
+                        aria-selected="false" aria-controls="guan_panel_2" tabindex="-1">新品</button>
+                <button type="button" class="guan_tab" role="tab" id="guan_tab_3"
+                        aria-selected="false" aria-controls="guan_panel_3" tabindex="-1">评测</button>
+            </div>
+        </div>
+
+        <!-- 行情 -->
+        <div class="guan_panel guan_panel_active" id="guan_panel_0" role="tabpanel" aria-labelledby="guan_tab_0">
+            <ul class="guan_list">
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">音乐强机苹果iPhone 5s价格稳定</a><span class="guan_date">(12/19)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">高性能双四核音乐机 魅族MX3低价热卖</a><span class="guan_date">(12/19)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">音乐品质最出色 vivo X3促销2199</a><span class="guan_date">(12/12)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">时尚音乐手机 vivo Xplay济南2798元</a><span class="guan_date">(11/27)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">好音乐好拍照 OPPO Find5今报价2580元</a><span class="guan_date">(08/27)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">1.5GHz四核1080p OPPO Find 5降价热卖</a><span class="guan_date">(07/30)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">彩色呼吸带双核机 索尼M35h促销2299</a><span class="guan_date">(06/08)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">1.7GHz四核1080p屏 vivo Xplay热卖中</a><span class="guan_date">(06/07)</span></li>
+            </ul>
+        </div>
+
+        <!-- 导购 -->
+        <div class="guan_panel" id="guan_panel_1" role="tabpanel" aria-labelledby="guan_tab_1">
+            <ul class="guan_list">
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">优秀音效漂亮外观 市售音乐手机盘点</a><span class="guan_date">(09/13)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">不要虐待耳朵 8款独特音效的音乐手机荐</a><span class="guan_date">(09/06)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">最低只要799 9款高性能音乐手机推荐</a><span class="guan_date">(07/22)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">长假主导后高考时代 奖励孩子的智能手机全攻略</a><span class="guan_date">(06/13)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">降价不限时 端午后值得关注降价四核机推荐</a><span class="guan_date">(06/13)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">高考之后尽情狂欢！学生超强手机推荐</a><span class="guan_date">(06/13)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">上半年看这里 最热1080P四核旗舰手机</a><span class="guan_date">(06/13)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">最厚不过7.99毫米 热门超薄强机大搜罗</a><span class="guan_date">(06/08)</span></li>
+            </ul>
+        </div>
+
+        <!-- 新品 -->
+        <div class="guan_panel" id="guan_panel_2" role="tabpanel" aria-labelledby="guan_tab_2">
+            <ul class="guan_list">
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">无限接近完美！vivo Xplay3S现场体验</a><span class="guan_date">(12/19)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">入门音乐机 诺基亚Lumia 525现身工信部</a><span class="guan_date">(11/05)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">传诺基亚下月将推首款WP音乐手机Glee</a><span class="guan_date">(09/29)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">软硬兼施 vivo Xstudio Hi-Fi音乐圈讲解</a><span class="guan_date">(08/23)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">没有中国 谷歌All Access音乐服务登欧洲</a><span class="guan_date">(08/09)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">Hi-Fi录音棚 vivo X3创Xstudio音乐系统</a><span class="guan_date">(08/07)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">Hi-Fi不够vivo又玩录音棚 X3音乐处理方案曝光</a><span class="guan_date">(08/06)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">小伙伴都惊呆了 薄至6mm以下vivo X3终露面</a><span class="guan_date">(07/31)</span></li>
+            </ul>
+        </div>
+
+        <!-- 评测 -->
+        <div class="guan_panel" id="guan_panel_3" role="tabpanel" aria-labelledby="guan_tab_3">
+            <ul class="guan_list">
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">音乐历久弥新 TD版魅族MX3评测</a><span class="guan_date">(12/19)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">极致影音完美音质 步步高vivo Xplay移动版图赏</a><span class="guan_date">(07/24)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">都是大屏何不同？三星S4/Mega静态评测</a><span class="guan_date">(06/20)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">超值四核智能机 HTC Desire 608t评测</a><span class="guan_date">(06/20)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">完美融合微博 魅族MX2 Flyme 2.2.5体验</a><span class="guan_date">(06/18)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">1080p屏Hi-Fi旗舰 vivo Xplay娱乐体验</a><span class="guan_date">(06/13)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">5.7英寸高清巨屏 酷派9070+X0影音体验</a><span class="guan_date">(06/06)</span></li>
+                <li class="guan_news"><i class="fa-solid fa-square guan_bullet" aria-hidden="true"></i><a class="guan_news_link" href="#">悬浮窗口播放 vivo Xplay视频功能体验</a><span class="guan_date">(06/06)</span></li>
+            </ul>
+        </div>
+    </section>
+
+    <script>
+        var guan_tabs = document.querySelectorAll(".guan_tab");
+        var guan_panels = document.querySelectorAll(".guan_panel");
+        var guan_count = guan_tabs.length;
+
+        function guan_switch(index) {
+            for (var i = 0; i < guan_count; i++) {
+                var isActive = (i === index);
+                guan_tabs[i].classList.toggle("guan_tab_active", isActive);
+                guan_tabs[i].setAttribute("aria-selected", isActive ? "true" : "false");
+                guan_tabs[i].tabIndex = isActive ? 0 : -1;
+                guan_panels[i].classList.toggle("guan_panel_active", isActive);
+            }
+        }
+
+        Array.prototype.forEach.call(guan_tabs, function (tab, index) {
+            tab.addEventListener("click", function () {
+                guan_switch(index);
+            });
+            tab.addEventListener("keydown", function (event) {
+                var next = -1;
+                if (event.key === "ArrowRight") { next = (index + 1) % guan_count; }
+                if (event.key === "ArrowLeft") { next = (index - 1 + guan_count) % guan_count; }
+                if (next < 0) { return; }
+                event.preventDefault();
+                guan_switch(next);
+                guan_tabs[next].focus();
+            });
+        });
+    </script>
+</body>
+</html>

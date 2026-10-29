@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 对象</title>
+    <!--
+        姓名：关斯译
+        建立时间：2026-10-29
+        使用的大模型：DeepSeek-V4.1-Flash
+        功能名称：展示JavaScript对象——字面量创建、属性访问、方法与 this、遍历、构造函数、对象数组统计、增删改
+    -->
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+        .guan_wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            padding: 30px 40px;
+        }
+        .guan_title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .guan_subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+        .guan_card {
+            border-left: 5px solid #3498db;
+            background: #fafafa;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .guan_card2 { border-left-color: #e67e22; }
+        .guan_card3 { border-left-color: #2ecc71; }
+        .guan_card4 { border-left-color: #9b59b6; }
+        .guan_card5 { border-left-color: #e74c3c; }
+        .guan_card6 { border-left-color: #16a085; }
+        .guan_type {
+            font-size: 1.15em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .guan_desc {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+        .guan_code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-family: Consolas, monospace;
+            font-size: 0.88em;
+            line-height: 1.55;
+            margin-top: 10px;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .guan_result {
+            margin-top: 10px;
+            padding: 8px 14px;
+            background: #eaf2fb;
+            border-radius: 6px;
+            font-size: 0.95em;
+            line-height: 1.9;
+        }
+        .guan_result strong { color: #2980b9; }
+        .guan_tag {
+            display: inline-block;
+            background: #e8eef5;
+            color: #2c3e50;
+            border-radius: 4px;
+            padding: 1px 7px;
+            margin-right: 6px;
+            font-family: Consolas, monospace;
+            font-size: 0.85em;
+        }
+        .guan_table {
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+            width: 100%;
+            background: #fff;
+        }
+        .guan_table th {
+            background: #3498db;
+            color: #fff;
+            font-weight: normal;
+            padding: 6px 8px;
+            border: 1px solid #2f89c5;
+        }
+        .guan_table td {
+            border: 1px solid #d0d7de;
+            padding: 5px 8px;
+            text-align: center;
+        }
+        .guan_table tr:nth-child(even) td { background: #f7fafd; }
+        .guan_btn {
+            background: #3498db;
+            color: #fff;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-right: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .guan_btn:hover { background: #2980b9; }
+        .guan_btn:disabled {
+            background: #b6c3cd;
+            cursor: not-allowed;
+        }
+        .guan_note {
+            color: #7f8c8d;
+            font-size: 0.85em;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="guan_wrapper">
+        <h1 class="guan_title">JavaScript 对象演示</h1>
+        <p class="guan_subtitle">字面量创建 / 属性访问 / 方法与 this / 遍历 / 构造函数 / 对象数组统计 / 增删改</p>
+
+        <div class="guan_card">
+            <div class="guan_type">一、用对象字面量创建对象</div>
+            <div class="guan_desc">对象是“键值对”的集合，花括号内用逗号分隔各个属性，属性值可以是数字、字符串，也可以是另一个对象。</div>
+            <div class="guan_code">var guan_student = {
+    guan_name: "关斯译",
+    guan_id: "24001010318",
+    guan_class: "计算机24003班",
+    guan_scores: { guan_web: 92, guan_js: 88 }   // 嵌套对象
+};</div>
+            <div class="guan_result" id="guan_r1"></div>
+        </div>
+
+        <div class="guan_card guan_card2">
+            <div class="guan_type">二、两种属性访问方式</div>
+            <div class="guan_desc">点语法简单直观，适合固定的属性名；方括号语法可以拼接变量、读取动态属性名。</div>
+            <div class="guan_code">guan_student.guan_name            // 点语法
+guan_student["guan_id"]           // 方括号语法
+guan_student.guan_scores.guan_web // 逐层访问嵌套对象
+var guan_key = "guan_class";
+guan_student[guan_key]            // 用变量取属性</div>
+            <div class="guan_result" id="guan_r2"></div>
+        </div>
+
+        <div class="guan_card guan_card3">
+            <div class="guan_type">三、对象的方法与 this</div>
+            <div class="guan_desc">属性值是函数时称为“方法”；方法内部的 this 指向调用它的那个对象，因此可以直接读取同一对象上的属性。</div>
+            <div class="guan_code">var guan_report = {
+    guan_owner: "关斯译",
+    guan_scores: [92, 88, 95],
+    guan_total: function () {
+        var guan_sum = 0;
+        for (var guan_i = 0; guan_i &lt; this.guan_scores.length; guan_i++) {
+            guan_sum += this.guan_scores[guan_i];
+        }
+        return guan_sum;
+    },
+    guan_average: function () {
+        return (this.guan_total() / this.guan_scores.length).toFixed(1);
+    }
+};</div>
+            <div class="guan_result" id="guan_r3"></div>
+        </div>
+
+        <div class="guan_card guan_card4">
+            <div class="guan_type">四、遍历对象：for...in 与 Object.keys</div>
+            <div class="guan_desc">for...in 逐个取出属性名（键），再用方括号取出对应的值；Object.keys / Object.values 直接把键、值收集成数组。</div>
+            <div class="guan_code">for (var guan_key in guan_student) { ... }
+
+Object.keys(guan_student);    // ["guan_name", "guan_id", ...]
+Object.values(guan_student);  // ["关斯译", "24001010318", ...]</div>
+            <div class="guan_result" id="guan_r4"></div>
+        </div>
+
+        <div class="guan_card guan_card5">
+            <div class="guan_type">五、构造函数批量创建对象</div>
+            <div class="guan_desc">把“创建对象”的过程写成构造函数，配合 new 就能按同一模板生成多个结构一致的对象实例。</div>
+            <div class="guan_code">function guan_Student(guan_name, guan_id, guan_scores) {
+    this.guan_name = guan_name;
+    this.guan_id = guan_id;
+    this.guan_scores = guan_scores;
+    this.guan_average = function () {
+        var guan_sum = 0;
+        for (var guan_i = 0; guan_i &lt; this.guan_scores.length; guan_i++) {
+            guan_sum += this.guan_scores[guan_i];
+        }
+        return guan_sum / this.guan_scores.length;
+    };
+}
+
+var guan_stu1 = new guan_Student("关斯译", "24001010318", [92, 88, 95]);</div>
+            <div class="guan_result" id="guan_r5"></div>
+        </div>
+
+        <div class="guan_card guan_card6">
+            <div class="guan_type">六、对象数组的统计与排序</div>
+            <div class="guan_desc">对象数组是最常用的数据结构：先用 sort 按平均分从高到低排序，再汇总出最高分与班级平均分。</div>
+            <div id="guan_r6"></div>
+        </div>
+
+        <div class="guan_card">
+            <div class="guan_type">七、为对象增、删、改属性</div>
+            <div class="guan_desc">对象是动态的：随时可以添加新属性、修改已有属性，或用 delete 删除属性。下面的按钮会直接操作 guan_student 对象。</div>
+            <div class="guan_code">guan_student.guan_email = "guan@example.com";   // 增加
+guan_student.guan_class = "计算机24003班";          // 修改
+delete guan_student.guan_email;                    // 删除</div>
+            <button class="guan_btn" id="guan_btnAdd">添加属性 guan_email</button>
+            <button class="guan_btn" id="guan_btnDel">删除属性 guan_email</button>
+            <div class="guan_result" id="guan_r7"></div>
+            <div class="guan_note">提示：按 F12 打开浏览器控制台，可以看到 JSON.stringify 输出的完整对象结构。</div>
+        </div>
+    </div>
+
+    <script>
+        // ===== 一、对象字面量 =====
+        var guan_student = {
+            guan_name: "关斯译",
+            guan_id: "24001010318",
+            guan_class: "计算机24003班",
+            guan_scores: { guan_web: 92, guan_js: 88 }
+        };
+
+        document.getElementById("guan_r1").innerHTML =
+            '对象共有 <strong>' + Object.keys(guan_student).length + '</strong> 个属性：' +
+            '<span class="guan_tag">guan_name</span>' +
+            '<span class="guan_tag">guan_id</span>' +
+            '<span class="guan_tag">guan_class</span>' +
+            '<span class="guan_tag">guan_scores</span>（嵌套对象）';
+
+        // ===== 二、属性访问 =====
+        var guan_key = "guan_class";
+        document.getElementById("guan_r2").innerHTML =
+            "点语法 guan_student.guan_name → <strong>" + guan_student.guan_name + "</strong><br>" +
+            '方括号 guan_student["guan_id"] → <strong>' + guan_student["guan_id"] + "</strong><br>" +
+            "嵌套访问 guan_student.guan_scores.guan_js → <strong>" + guan_student.guan_scores.guan_js + "</strong> 分<br>" +
+            "变量取值 guan_student[guan_key] → <strong>" + guan_student[guan_key] + "</strong>";
+
+        // ===== 三、方法与 this =====
+        var guan_report = {
+            guan_owner: "关斯译",
+            guan_scores: [92, 88, 95],
+            guan_total: function () {
+                var guan_sum = 0;
+                for (var guan_i = 0; guan_i < this.guan_scores.length; guan_i++) {
+                    guan_sum += this.guan_scores[guan_i];
+                }
+                return guan_sum;
+            },
+            guan_average: function () {
+                return (this.guan_total() / this.guan_scores.length).toFixed(1);
+            }
+        };
+
+        document.getElementById("guan_r3").innerHTML =
+            "三科成绩：" + guan_report.guan_scores.join("、") + "<br>" +
+            "guan_report.guan_total() → 总分 <strong>" + guan_report.guan_total() + "</strong>；" +
+            "guan_report.guan_average() → 平均分 <strong>" + guan_report.guan_average() + "</strong>";
+
+        // ===== 四、遍历对象 =====
+        var guan_rows = "";
+        for (var guan_k in guan_student) {
+            var guan_v = guan_student[guan_k];
+            if (typeof guan_v === "object") {
+                guan_v = JSON.stringify(guan_v);
+            }
+            guan_rows += "<tr><td>" + guan_k + "</td><td>" + guan_v + "</td></tr>";
+        }
+        document.getElementById("guan_r4").innerHTML =
+            '<table class="guan_table"><tr><th>属性名（键）</th><th>属性值</th></tr>' +
+            guan_rows + "</table>" +
+            "Object.keys() 得到 <strong>" + Object.keys(guan_student).length + "</strong> 个键，" +
+            "Object.values() 得到 <strong>" + Object.values(guan_student).length + "</strong> 个值。";
+
+        // ===== 五、构造函数 =====
+        function guan_Student(guan_name, guan_id, guan_scores) {
+            this.guan_name = guan_name;
+            this.guan_id = guan_id;
+            this.guan_scores = guan_scores;
+            this.guan_average = function () {
+                var guan_sum = 0;
+                for (var guan_i = 0; guan_i < this.guan_scores.length; guan_i++) {
+                    guan_sum += this.guan_scores[guan_i];
+                }
+                return guan_sum / this.guan_scores.length;
+            };
+        }
+
+        var guan_stu1 = new guan_Student("关斯译", "24001010318", [92, 88, 95]);
+        var guan_stu2 = new guan_Student("唐翊斌", "24001010303", [85, 90, 78]);
+        var guan_stu3 = new guan_Student("李思远", "24001010321", [76, 82, 88]);
+        var guan_list = [guan_stu1, guan_stu2, guan_stu3];
+
+        document.getElementById("guan_r5").innerHTML =
+            "new 出来的 " + guan_list.length + " 个实例：<br>" +
+            "guan_stu1.guan_name → <strong>" + guan_stu1.guan_name + "</strong>，平均分 " +
+            guan_stu1.guan_average().toFixed(1) + "<br>" +
+            "guan_stu1 instanceof guan_Student → <strong>" + (guan_stu1 instanceof guan_Student) + "</strong>";
+
+        // ===== 六、对象数组统计与排序 =====
+        var guan_sorted = guan_list.slice().sort(function (guan_a, guan_b) {
+            return guan_b.guan_average() - guan_a.guan_average();
+        });
+
+        var guan_classSum = 0;
+        var guan_html = '<table class="guan_table">';
+        guan_html += "<tr><th>排名</th><th>姓名</th><th>学号</th><th>平均分</th><th>最高分</th></tr>";
+        for (var guan_j = 0; guan_j < guan_sorted.length; guan_j++) {
+            var guan_s = guan_sorted[guan_j];
+            var guan_avg = guan_s.guan_average();
+            guan_classSum += guan_avg;
+            guan_html += "<tr><td>" + (guan_j + 1) + "</td><td>" + guan_s.guan_name + "</td><td>" +
+                guan_s.guan_id + "</td><td>" + guan_avg.toFixed(1) + "</td><td>" +
+                Math.max.apply(null, guan_s.guan_scores) + "</td></tr>";
+        }
+        guan_html += "</table>";
+        guan_html += '<div class="guan_result">班级平均分：<strong>' +
+            (guan_classSum / guan_sorted.length).toFixed(1) + "</strong>；" +
+            "第一名：<strong>" + guan_sorted[0].guan_name + "</strong></div>";
+        document.getElementById("guan_r6").innerHTML = guan_html;
+
+        // ===== 七、增、删、改属性 =====
+        var guan_btnAdd = document.getElementById("guan_btnAdd");
+        var guan_btnDel = document.getElementById("guan_btnDel");
+
+        function guan_showObject(guan_msg) {
+            var guan_keys = Object.keys(guan_student).join("、");
+            document.getElementById("guan_r7").innerHTML =
+                guan_msg + "<br>当前属性：" + guan_keys + "<br>" +
+                '<div class="guan_code">' + JSON.stringify(guan_student, null, 2) + "</div>";
+        }
+
+        guan_btnAdd.onclick = function () {
+            guan_student.guan_email = "guan@example.com";
+            guan_btnAdd.disabled = true;
+            guan_btnDel.disabled = false;
+            guan_showObject("已添加属性 guan_email = " + guan_student.guan_email);
+        };
+
+        guan_btnDel.onclick = function () {
+            delete guan_student.guan_email;
+            guan_btnAdd.disabled = false;
+            guan_btnDel.disabled = true;
+            guan_showObject("已删除属性 guan_email");
+        };
+
+        guan_btnDel.disabled = true;
+        guan_showObject("对象初始状态");
+
+        // ===== 控制台输出，方便对照调试 =====
+        console.log("guan_student：", guan_student);
+        console.log("JSON 字符串：", JSON.stringify(guan_student, null, 2));
+        console.log("Object.keys：", Object.keys(guan_student));
+        console.log("实例 instanceof 检查：", guan_stu1 instanceof guan_Student);
+    </script>
+</body>
+</html>

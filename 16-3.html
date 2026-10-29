@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>目录 · 课程学习</title>
+    <!--
+        姓名：关斯译
+        建立时间：2026-10-29
+        使用的大模型：DeepSeek-V4.1-Flash
+        功能名称：仿照给定截图完成课程“目录”页——顶部课程导航、任务筛选下拉框、已完成进度、
+                  仅看考核任务开关，以及可展开的章节目录卡片（当前章节高亮）
+    -->
+    <link rel="stylesheet" href="三级项目/font/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        :root {
+            --guan_bg: #f7f8fc;
+            --guan_card: #ffffff;
+            --guan_line: #edeff5;
+            --guan_line_strong: #e3e7f1;
+            --guan_text: #1f2937;
+            --guan_muted: #8b93a5;
+            --guan_muted2: #6b7280;
+            --guan_blue: #3b6ef6;
+            --guan_blue_soft: #eef3fe;
+            --guan_navy: #1e3a6e;
+        }
+        body {
+            margin: 0;
+            background: var(--guan_bg);
+            color: var(--guan_text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== 顶部导航 ===== */
+        .guan_nav {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: #fff;
+            border-bottom: 1px solid var(--guan_line);
+        }
+        .guan_nav_inner {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 22px;
+            height: 54px;
+            overflow-x: auto;
+        }
+        .guan_nav_inner::-webkit-scrollbar { height: 0; }
+        .guan_nav_link {
+            flex: none;
+            padding: 7px 13px;
+            border-radius: 999px;
+            color: #374151;
+            font-size: 15px;
+            line-height: 1.2;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: color .18s ease, background .18s ease;
+        }
+        .guan_nav_link:hover { color: var(--guan_blue); background: #f4f7ff; }
+        .guan_nav_link.guan_active { color: var(--guan_blue); background: #edf3ff; }
+
+        /* ===== 主体 ===== */
+        .guan_main {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 28px 36px 70px;
+        }
+
+        /* 筛选下拉框 */
+        .guan_toolbar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .guan_select { position: relative; width: 136px; }
+        .guan_select select {
+            width: 100%;
+            height: 44px;
+            padding: 0 36px 0 16px;
+            appearance: none;
+            -webkit-appearance: none;
+            border: 1px solid var(--guan_line_strong);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--guan_muted);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            transition: border-color .18s ease;
+        }
+        .guan_select select:hover { border-color: #d6ddec; }
+        .guan_select select:focus { border-color: #c2d2f6; box-shadow: 0 0 0 3px rgba(59, 110, 246, .10); }
+        .guan_select .guan_select_icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: #a3aaba;
+            pointer-events: none;
+        }
+
+        /* 进度与开关 */
+        .guan_filter_row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px 30px;
+            margin-top: 14px;
+        }
+        .guan_progress { font-size: 14px; color: var(--guan_muted2); }
+        .guan_progress b { margin-left: 4px; color: #374151; font-weight: 600; }
+
+        .guan_switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #4b5563;
+            cursor: pointer;
+            user-select: none;
+        }
+        .guan_switch_input { position: absolute; width: 0; height: 0; opacity: 0; }
+        .guan_switch_track {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            border-radius: 999px;
+            background: #e7eaf2;
+            transition: background .2s ease;
+        }
+        .guan_switch_knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(20, 40, 80, .25);
+            transition: transform .2s ease;
+        }
+        .guan_switch_input:checked + .guan_switch_track { background: var(--guan_blue); }
+        .guan_switch_input:checked + .guan_switch_track .guan_switch_knob { transform: translateX(18px); }
+        .guan_switch_input:focus-visible + .guan_switch_track { box-shadow: 0 0 0 3px rgba(59, 110, 246, .22); }
+
+        /* ===== 章节列表 ===== */
+        .guan_list { margin-top: 22px; }
+        .guan_row {
+            padding: 8px 20px;
+            border-radius: 12px;
+            transition: background .2s ease;
+        }
+        .guan_row_active { background: var(--guan_blue_soft); }
+
+        .guan_item {
+            background: #fff;
+            border: 1px solid var(--guan_line);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(23, 43, 99, .04);
+            overflow: hidden;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+        .guan_row:hover .guan_item { border-color: #e2e8f4; box-shadow: 0 6px 18px rgba(23, 43, 99, .07); }
+        .guan_item.guan_item_active {
+            background: linear-gradient(90deg, #f0f5ff 0%, #fbfcff 40%, #ffffff 100%);
+            border-color: #dfe8fb;
+            box-shadow: 0 4px 16px rgba(59, 110, 246, .10);
+        }
+        .guan_item_head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            height: 80px;
+            padding: 0 26px;
+            cursor: pointer;
+            list-style: none;
+        }
+        .guan_item_head::-webkit-details-marker { display: none; }
+        .guan_item_arrow {
+            width: 12px;
+            text-align: center;
+            font-size: 13px;
+            color: #a8afbd;
+            transition: transform .22s ease, color .22s ease;
+        }
+        .guan_item[open] .guan_item_arrow { transform: rotate(90deg); }
+        .guan_item_active .guan_item_arrow { color: #5a7fc4; }
+        .guan_item_title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #232b3a;
+            letter-spacing: .01em;
+        }
+        .guan_item_active .guan_item_title { color: var(--guan_navy); }
+        .guan_tag {
+            margin-left: 2px;
+            padding: 3px 9px;
+            border-radius: 4px;
+            background: #f2f4f8;
+            color: #7b8496;
+            font-size: 13px;
+            font-weight: 400;
+        }
+        .guan_item_active .guan_tag { background: rgba(59, 110, 246, .08); color: #5b7fb9; }
+
+        .guan_item_body {
+            padding: 16px 26px 20px 50px;
+            border-top: 1px dashed #eef1f7;
+        }
+        .guan_task_list {
+            display: grid;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .guan_task {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: #fafbfe;
+            font-size: 13.5px;
+            color: #4b5563;
+        }
+        .guan_task i { width: 14px; font-size: 12px; color: #9aa6bd; text-align: center; }
+        .guan_task span { flex: 1; }
+        .guan_task em { font-style: normal; font-size: 12px; color: #9aa3b4; }
+
+        @media (max-width: 720px) {
+            .guan_main { padding: 20px 18px 50px; }
+            .guan_row { padding: 6px 10px; }
+            .guan_item_head { height: 68px; padding: 0 16px; gap: 9px; }
+            .guan_item_title { font-size: 15px; }
+            .guan_item_body { padding: 14px 16px 16px 38px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="guan_nav">
+        <nav class="guan_nav_inner" aria-label="课程导航">
+            <a class="guan_nav_link" href="#">导学</a>
+            <a class="guan_nav_link" href="#">教材</a>
+            <a class="guan_nav_link" href="#">教学目标</a>
+            <a class="guan_nav_link" href="#">知识图谱</a>
+            <a class="guan_nav_link guan_active" href="#" aria-current="page">目录</a>
+            <a class="guan_nav_link" href="#">FAQ</a>
+            <a class="guan_nav_link" href="#">学习资料</a>
+            <a class="guan_nav_link" href="#">测验</a>
+            <a class="guan_nav_link" href="#">作业</a>
+            <a class="guan_nav_link" href="#">项目</a>
+        </nav>
+    </header>
+
+    <main class="guan_main">
+        <div class="guan_toolbar">
+            <div class="guan_select">
+                <select class="guan_select_box" aria-label="任务类型筛选">
+                    <option>全部任务</option>
+                    <option>视频</option>
+                    <option>文档</option>
+                    <option>测验</option>
+                    <option>作业</option>
+                </select>
+                <i class="fa-solid fa-chevron-down guan_select_icon" aria-hidden="true"></i>
+            </div>
+        </div>
+
+        <div class="guan_filter_row">
+            <div class="guan_progress">已完成 <b>0/0</b></div>
+            <label class="guan_switch">
+                <input type="checkbox" class="guan_switch_input" id="guan_only_exam">
+                <span class="guan_switch_track"><span class="guan_switch_knob"></span></span>
+                <span>仅查看计入考核任务</span>
+            </label>
+        </div>
+
+        <div class="guan_list">
+            <div class="guan_row">
+                <details class="guan_item">
+                    <summary class="guan_item_head">
+                        <i class="fa-solid fa-caret-right guan_item_arrow" aria-hidden="true"></i>
+                        <span class="guan_item_title">HTML基础</span>
+                        <span class="guan_tag">混合</span>
+                    </summary>
+                    <div class="guan_item_body">
+                        <ul class="guan_task_list">
+                            <li class="guan_task"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>认识 HTML 与文档结构</span><em>视频 · 18 分钟</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>常用文本标签与语义化</span><em>文档 · 必读</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>练习：编写第一张个人介绍页</span><em>作业</em></li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+            <div class="guan_row">
+                <details class="guan_item">
+                    <summary class="guan_item_head">
+                        <i class="fa-solid fa-caret-right guan_item_arrow" aria-hidden="true"></i>
+                        <span class="guan_item_title">表单和HTML5基础</span>
+                        <span class="guan_tag">混合</span>
+                    </summary>
+                    <div class="guan_item_body">
+                        <ul class="guan_task_list">
+                            <li class="guan_task"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>表单元素与输入类型</span><em>视频 · 22 分钟</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>HTML5 新增表单属性</span><em>文档 · 必读</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-list-check" aria-hidden="true"></i><span>表单结构小测</span><em>测验 · 10 题</em></li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+            <div class="guan_row guan_row_active">
+                <details class="guan_item guan_item_active">
+                    <summary class="guan_item_head">
+                        <i class="fa-solid fa-caret-right guan_item_arrow" aria-hidden="true"></i>
+                        <span class="guan_item_title">CSS基础</span>
+                        <span class="guan_tag">混合</span>
+                    </summary>
+                    <div class="guan_item_body">
+                        <ul class="guan_task_list">
+                            <li class="guan_task"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>CSS 语法与三种引入方式</span><em>视频 · 20 分钟</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>基础选择器与优先级</span><em>文档 · 必读</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>练习：为介绍页添加样式</span><em>作业</em></li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+            <div class="guan_row">
+                <details class="guan_item">
+                    <summary class="guan_item_head">
+                        <i class="fa-solid fa-caret-right guan_item_arrow" aria-hidden="true"></i>
+                        <span class="guan_item_title">层叠与继承、框模型基础</span>
+                        <span class="guan_tag">混合</span>
+                    </summary>
+                    <div class="guan_item_body">
+                        <ul class="guan_task_list">
+                            <li class="guan_task"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>层叠规则与权重计算</span><em>视频 · 16 分钟</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>可继承属性一览</span><em>文档</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>盒模型尺寸计算</span><em>文档 · 必读</em></li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+            <div class="guan_row">
+                <details class="guan_item">
+                    <summary class="guan_item_head">
+                        <i class="fa-solid fa-caret-right guan_item_arrow" aria-hidden="true"></i>
+                        <span class="guan_item_title">浮动和CSS布局</span>
+                        <span class="guan_tag">混合</span>
+                    </summary>
+                    <div class="guan_item_body">
+                        <ul class="guan_task_list">
+                            <li class="guan_task"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>浮动与清除浮动</span><em>视频 · 21 分钟</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>定位与层叠顺序</span><em>文档</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>练习：双栏图文布局</span><em>作业</em></li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+            <div class="guan_row">
+                <details class="guan_item">
+                    <summary class="guan_item_head">
+                        <i class="fa-solid fa-caret-right guan_item_arrow" aria-hidden="true"></i>
+                        <span class="guan_item_title">CSS网页元素设计</span>
+                        <span class="guan_tag">混合</span>
+                    </summary>
+                    <div class="guan_item_body">
+                        <ul class="guan_task_list">
+                            <li class="guan_task"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>导航栏与列表样式</span><em>视频 · 19 分钟</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>表格、图文卡片与表单美化</span><em>文档 · 必读</em></li>
+                            <li class="guan_task"><i class="fa-solid fa-list-check" aria-hidden="true"></i><span>综合页面验收</span><em>项目</em></li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        /* 只允许同时展开一个章节：点击新章节时收起其它章节，沿用截图中“当前章节高亮”的视觉习惯 */
+        var guan_details = document.querySelectorAll(".guan_item");
+
+        Array.prototype.forEach.call(guan_details, function (item) {
+            item.addEventListener("toggle", function () {
+                if (!item.open) { return; }
+                Array.prototype.forEach.call(guan_details, function (other) {
+                    if (other !== item && other.open) { other.open = false; }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

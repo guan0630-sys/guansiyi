@@ -126,4 +126,29 @@ f479abc3dd4a9104fd50b33964ea7715
 `https://guan0630-sys.github.io/guansiyi/`为啥我点进去之后少东西啊，我有的东西在里面没有体现
 
 ---
+## [2026-10-29 10:30] Model: GLM-5.3-Flash
+
+把没上传的上传到GitHub上
+
+---
+## [2026-10-29 13:41] Model: DeepSeek-V4.1-Flash
+
+完成16-2.html，展示JavaScript对象。
+
+---
+## [2026-10-29 13:42] Model: DeepSeek-V4.1-Flash
+
+完成16-1.html，展示JavaScript数组的主要方法，形象一些
+
+---
+## [2026-10-29 14:27] Model: DeepSeek-V4.1-Flash
+
+完成16-3.html，使用的图标在font目录里选，完成的网页尽可能的和给定的图片相似。
+
+---
+## [2026-10-29 14:41] Model: DeepSeek-V4.1-Flash
+
+完成16-4.html，使用的图标在font目录里选，完成的网页尽可能的和给定的图片相似,要有tab功能
+
+---
 
